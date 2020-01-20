@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import './screens/home_screen.dart';
+import './screens/product_detail_screen.dart';
+import './screens/user_products_screen.dart';
+import './screens/nav_tab.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,7 +13,7 @@ class MyApp extends StatelessWidget {
       title: 'Vitrine',
       theme: ThemeData(
         primarySwatch: Colors.green,
-        accentColor: Color.fromRGBO(0, 125, 125, 1),
+        accentColor: Colors.amber,
         canvasColor: Color.fromRGBO(255, 254, 229, 1),
         fontFamily: 'RobotoCondensed',
         textTheme: ThemeData.light().textTheme.copyWith(
@@ -23,7 +25,11 @@ class MyApp extends StatelessWidget {
               body1: TextStyle(fontFamily: 'RobotoCondensed'),
             ),
       ),
-      home: HomeScreen(),
+      home: NavTabs(),
+      routes: {
+        UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
+        ProductDetailScreen.routeName: (_) => ProductDetailScreen(),
+      },
     );
   }
 }

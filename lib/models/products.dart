@@ -8,8 +8,9 @@ class Product {
   final DateTime createdOn;
   final String condition;
   final String zap;
-  final String delivery;
+  final bool delivery;
   final bool tradable;
+  final String category;
   final List<String> imageUrl;
 
   Product({
@@ -23,5 +24,6 @@ class Product {
     @required this.tradable,
     @required this.imageUrl,
     @required this.price,
+    @required this.category,
   });
 }

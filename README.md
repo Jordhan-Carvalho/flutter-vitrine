@@ -1,4 +1,4 @@
-# vitrine
+# Vitrine
 
 A new Flutter project.
 
