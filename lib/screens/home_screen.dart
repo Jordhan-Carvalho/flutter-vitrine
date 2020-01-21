@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
       itemBuilder: (ctx, index) => ProductItem(prod[index]),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 1,
+        childAspectRatio: 1.4,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),

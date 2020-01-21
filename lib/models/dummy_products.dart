@@ -3,9 +3,10 @@ import './products.dart';
 final dummyProducts = [
   Product(
       id: '1',
-      condition: 'Usado',
+      condition: Condition.Usado,
       createdOn: DateTime.now(),
       delivery: false,
+      city: City.Barreiras,
       description:
           'Put the spaghetti into the boiling water - they should be done in about 10 to 12 minutes.',
       title: 'Spagethti',
@@ -19,9 +20,10 @@ final dummyProducts = [
       category: 'Comidas'),
   Product(
     id: '2',
-    condition: 'Novo',
+    condition: Condition.Novo,
     createdOn: DateTime.now(),
     delivery: false,
+    city: City.Barreiras,
     price: 55.98,
     category: "Gibi",
     description:
@@ -37,8 +39,9 @@ final dummyProducts = [
   ),
   Product(
     id: '3',
-    condition: 'Usado',
+    condition: Condition.Usado,
     createdOn: DateTime.now(),
+    city: City.Barreiras,
     delivery: true,
     price: 55.98,
     category: "Tablet",
@@ -56,8 +59,9 @@ final dummyProducts = [
   ),
   Product(
     id: '4',
-    condition: 'Usado',
+    condition: Condition.Usado,
     createdOn: DateTime.now(),
+    city: City.Barreiras,
     delivery: true,
     price: 1200.98,
     category: "Video-game",
@@ -73,8 +77,9 @@ final dummyProducts = [
   ),
   Product(
     id: '5',
-    condition: 'Novo',
+    condition: Condition.Usado,
     createdOn: DateTime.now(),
+    city: City.Barreiras,
     delivery: true,
     price: 1852,
     category: "Video-game",
@@ -89,8 +94,9 @@ final dummyProducts = [
   ),
   Product(
     id: '6',
-    condition: 'Novo',
+    condition: Condition.Novo,
     createdOn: DateTime.now(),
+    city: City.Barreiras,
     delivery: false,
     price: 900,
     category: "Esteira",
@@ -104,8 +110,9 @@ final dummyProducts = [
   ),
   Product(
     id: '7',
-    condition: 'Usado',
+    condition: Condition.Usado,
     createdOn: DateTime.now(),
+    city: City.Barreiras,
     delivery: true,
     price: 150,
     category: "Vestuario",

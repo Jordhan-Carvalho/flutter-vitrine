@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 // import 'package:provider/provider.dart';
 
 // import '../providers/product.dart';
@@ -21,8 +22,8 @@ class ProductItem extends StatelessWidget {
       child: GridTile(
         child: GestureDetector(
           onTap: () {
-            Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
-                arguments: product.id);
+            Navigator.of(context)
+                .pushNamed(ProductDetailScreen.routeName, arguments: product);
           },
           child: Hero(
             tag: product.id,
@@ -35,16 +36,24 @@ class ProductItem extends StatelessWidget {
         ),
         footer: GridTileBar(
           leading: Text(
-            '${product.condition}',
+            '${describeEnum(product.condition)}',
             style: TextStyle(color: Colors.white),
           ),
           trailing: Row(
             children: <Widget>[
-              if (product.tradable) const Icon(Icons.autorenew),
-              if (product.delivery) const Icon(Icons.local_shipping),
+              if (product.tradable)
+                const Tooltip(
+                  child: Icon(Icons.autorenew),
+                  message: 'Trocável',
+                ),
+              if (product.delivery)
+                const Tooltip(
+                  child: Icon(Icons.local_shipping),
+                  message: 'Entrega disponível',
+                ),
             ],
           ),
-          backgroundColor: Color.fromRGBO(0, 0, 0, 0.8),
+          backgroundColor: Color.fromRGBO(0, 0, 0, 0.5),
           title: Text(
             product.title,
             textAlign: TextAlign.center,
