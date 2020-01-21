@@ -10,7 +10,7 @@ enum City { Barreiras, LEM }
 class Product {
   final String id;
   final String title;
-  final double price;
+  final int price;
   final String description;
   final DateTime createdOn;
   final Condition condition;

@@ -16,7 +16,7 @@ final dummyProducts = [
         'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Spaghetti_Bolognese_mit_Parmesan_oder_Grana_Padano.jpg/800px-Spaghetti_Bolognese_mit_Parmesan_oder_Grana_Padano.jpg',
         'https://cdn.pixabay.com/photo/2018/07/11/21/51/toast-3532016_1280.jpg',
       ],
-      price: 99.55,
+      price: 99,
       category: 'Comidas'),
   Product(
     id: '2',
@@ -24,10 +24,10 @@ final dummyProducts = [
     createdOn: DateTime.now(),
     delivery: false,
     city: City.Barreiras,
-    price: 55.98,
+    price: 55,
     category: "Gibi",
     description:
-        'Conan Exiles é um jogo de sobrevivência em mundo aberto ambientado nas terras brutais de Conan, o Bárbaro. Sobreviva em um mundo hostil, construa seu reino e subjugue seus inimigos em combates brutais e conflitos épicos.',
+        'Conan Exiles é um jogo de sobrevivência em mundo aberto ambientado nas terras brutais de Conan, o Bárbaro. Sobreviva em um mundo hostil, construa seu reino e subjugue seus inimigos em combates brutais e conflitos épicos. Conan Exiles é um jogo de sobrevivência em mundo aberto ambientado nas terras brutais de Conan, o Bárbaro. Sobreviva em um mundo hostil, construa seu reino e subjugue seus inimigos em combates brutais e conflitos épicos. Conan Exiles é um jogo de sobrevivência em mundo aberto ambientado nas terras brutais de Conan, o Bárbaro. Sobreviva em um mundo hostil, construa seu reino e subjugue seus inimigos em combates brutais e conflitos épicos. Conan Exiles é um jogo de sobrevivência em mundo aberto ambientado nas terras brutais de Conan, o Bárbaro. Sobreviva em um mundo hostil, construa seu reino e subjugue seus inimigos em combates brutais e conflitos épicos.',
     title: 'Conan',
     tradable: true,
     zap: '991116269',
@@ -43,7 +43,7 @@ final dummyProducts = [
     createdOn: DateTime.now(),
     city: City.Barreiras,
     delivery: true,
-    price: 55.98,
+    price: 55,
     category: "Tablet",
     description:
         'iPad new 2018  128 gigas de memória interna tela de 9.7 roda jogos pesado como pubg freefire ',
@@ -63,7 +63,7 @@ final dummyProducts = [
     createdOn: DateTime.now(),
     city: City.Barreiras,
     delivery: true,
-    price: 1200.98,
+    price: 1200,
     category: "Video-game",
     description:
         'XBOX One em perfeito estado de funcionamento e extremamente conservado Um controleHD Interno de 500gb Troco por notebook',

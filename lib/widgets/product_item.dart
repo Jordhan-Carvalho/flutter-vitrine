@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 // import 'package:provider/provider.dart';
 
 // import '../providers/product.dart';
@@ -58,7 +59,8 @@ class ProductItem extends StatelessWidget {
             product.title,
             textAlign: TextAlign.center,
           ),
-          subtitle: Text('R\$ ${product.price.toString()}'),
+          subtitle: Text(
+              'R\$ ${NumberFormat("###,###", "pt_BR").format(product.price).toString()}'),
         ),
       ),
     );

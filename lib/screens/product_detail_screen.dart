@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_pro/carousel_pro.dart';
+import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 
 import '../models/products.dart';
+import '../widgets/card_container.dart';
+import '../widgets/theme_button.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   const ProductDetailScreen({Key key}) : super(key: key);
   static final routeName = '/product-detail';
 
-  //TESTING IF WORKS
   Widget _buildImages(Product prod) {
-    List<String> images = [];
+    List<NetworkImage> images = [];
     for (var image in prod.imageUrl) {
-      images.add(image);
+      images.add(NetworkImage(image));
     }
-    // Return the carousel
+
+    return Carousel(
+      images: images,
+      dotSize: 3.0,
+      dotSpacing: 10,
+      indicatorBgPadding: 5,
+      autoplayDuration: Duration(seconds: 6),
+    );
   }
 
   @override
@@ -28,49 +39,184 @@ class ProductDetailScreen extends StatelessWidget {
     // final prod = Provider.of<Products>(context, listen: false).findById(prodId);
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(prod.title),
-      // ),
       body: CustomScrollView(
         // slivers = scrollable areas of the screen
         slivers: <Widget>[
           SliverAppBar(
-              expandedHeight: 300,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                  title: Text(prod.title),
-                  background: Hero(
-                    tag: prod.id,
-                    child: Image.network(
-                      prod.imageUrl[0],
-                      fit: BoxFit.cover,
-                    ),
-                  ))),
+            expandedHeight: 300,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(prod.title),
+              background: Hero(
+                tag: prod.id,
+                child: _buildImages(prod),
+              ),
+            ),
+          ),
           SliverList(
             delegate: SliverChildListDelegate([
-              SizedBox(height: 10),
-              Text(
-                '\$${prod.price.toString()}',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 20,
+              Card(
+                color: Theme.of(context).canvasColor,
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Chip(
+                          backgroundColor: Colors.transparent,
+                          avatar: CircleAvatar(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            child: Text('R\$'),
+                          ),
+                          label: Text(
+                              '${NumberFormat("###,###", "pt_BR").format(prod.price).toString()}'),
+                        ),
+                        Chip(
+                          backgroundColor: Colors.transparent,
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.white10,
+                            child: Icon(
+                              prod.condition == Condition.Novo
+                                  ? Icons.new_releases
+                                  : Icons.beenhere,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          label: Text('${describeEnum(prod.condition)}'),
+                        ),
+                        Chip(
+                          backgroundColor: Colors.transparent,
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.white10,
+                            child: Icon(
+                              Icons.timer,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          label: Text(DateFormat('yMMMd', 'pt-BR')
+                              .format(prod.createdOn)),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        if (prod.delivery)
+                          Chip(
+                            backgroundColor: Colors.transparent,
+                            avatar: CircleAvatar(
+                              backgroundColor: Colors.white10,
+                              child: Icon(
+                                Icons.local_shipping,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            label: const Text('Entrega disponível'),
+                          ),
+                        if (prod.tradable)
+                          Chip(
+                            backgroundColor: Colors.transparent,
+                            avatar: CircleAvatar(
+                              backgroundColor: Colors.white10,
+                              child: Icon(
+                                Icons.autorenew,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            label: const Text('Aceita trocas'),
+                          ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               SizedBox(
                 height: 10,
               ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                width: double.infinity,
-                child: Text(
-                  prod.description,
-                  textAlign: TextAlign.center,
-                  softWrap: true,
+              CardContainer(
+                height: 160,
+                width: 300,
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Descrição',
+                      style: Theme.of(context).textTheme.title,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          width: double.infinity,
+                          child: Text(
+                            prod.description,
+                            textAlign: TextAlign.justify,
+                            softWrap: true,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(
-                height: 800,
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  ThemeButton(
+                    content: Row(
+                      children: <Widget>[
+                        Text('Favoritos'),
+                        Icon(Icons.star_border),
+                      ],
+                    ),
+                    handlePress: () {},
+                  ),
+                  ThemeButton(
+                    content: Row(
+                      children: <Widget>[
+                        Icon(Icons.perm_phone_msg),
+                        Text('Mensagem'),
+                      ],
+                    ),
+                    handlePress: () {},
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 50),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    IconButton(
+                      color: Colors.amber,
+                      icon: Icon(
+                        Icons.flag,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                      tooltip: 'Reportar',
+                      onPressed: () {},
+                    ),
+                    Text(
+                      'Reportar',
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 300,
               ),
             ]),
           ),
