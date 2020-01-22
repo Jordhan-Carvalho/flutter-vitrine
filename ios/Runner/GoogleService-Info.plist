@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>957284359259-a33bd8pe4a7ebco0kv0hkm910cuuc3rt.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.957284359259-a33bd8pe4a7ebco0kv0hkm910cuuc3rt</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCB35Mhmg7NLlmKCILtBRdQ8jNVqAeFRHU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>957284359259</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>dev.jordhan.vitrine</string>
+	<key>PROJECT_ID</key>
+	<string>vitrine-3da15</string>
+	<key>STORAGE_BUCKET</key>
+	<string>vitrine-3da15.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:957284359259:ios:b5d43b9deb7fd76c61b37e</string>
+	<key>DATABASE_URL</key>
+	<string>https://vitrine-3da15.firebaseio.com</string>
+</dict>
+</plist>
