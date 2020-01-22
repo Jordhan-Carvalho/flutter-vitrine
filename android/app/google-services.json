@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "957284359259",
+    "firebase_url": "https://vitrine-3da15.firebaseio.com",
+    "project_id": "vitrine-3da15",
+    "storage_bucket": "vitrine-3da15.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957284359259:android:0a08fa3e6aac843961b37e",
+        "android_client_info": {
+          "package_name": "dev.jordhan.vitrine"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "957284359259-mtbrg4b23dvuob8fb6e082q24eqkng2h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQj0u7fDPcJ4utLIWWp4bVFadXe81oKd8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "957284359259-mtbrg4b23dvuob8fb6e082q24eqkng2h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
