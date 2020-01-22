@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
 
 import '../models/products.dart';
 import '../widgets/card_container.dart';
@@ -183,7 +184,10 @@ class ProductDetailScreen extends StatelessWidget {
                         Text('Mensagem'),
                       ],
                     ),
-                    handlePress: () {},
+                    handlePress: () {
+                      FlutterOpenWhatsapp.sendSingleMessage("5577991116269",
+                          "Olá, ${prod.title} ainda está disponível?");
+                    },
                   ),
                 ],
               ),
@@ -216,7 +220,7 @@ class ProductDetailScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: 300,
+                height: 100,
               ),
             ]),
           ),

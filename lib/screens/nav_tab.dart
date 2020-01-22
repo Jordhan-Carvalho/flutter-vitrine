@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import './edit_product_screen.dart';
 import './favorites_screen.dart';
 import './categories_screen.dart';
 import './home_screen.dart';
@@ -47,7 +48,8 @@ class _NavTabsState extends State<NavTabs> {
             ),
             color: Theme.of(context).primaryColor,
             textColor: Colors.white,
-            onPressed: () {},
+            onPressed: () =>
+                Navigator.of(context).pushNamed(EditProductScreen.routeName),
           )
         ],
       ),

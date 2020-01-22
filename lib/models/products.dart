@@ -13,26 +13,38 @@ class Product {
   final int price;
   final String description;
   final DateTime createdOn;
-  final Condition condition;
-  final String zap;
-  final bool delivery;
-  final bool tradable;
-  final String category;
+  Condition condition;
+  bool delivery;
+  bool tradable;
+  String category;
   final List<String> imageUrl;
+  int telNumber;
   final City city;
 
   Product({
     @required this.id,
     @required this.title,
     @required this.description,
-    @required this.createdOn,
+    this.createdOn,
     @required this.condition,
-    @required this.zap,
     @required this.delivery,
     @required this.tradable,
-    @required this.imageUrl,
+    this.imageUrl,
     @required this.price,
     @required this.category,
-    @required this.city,
+    this.city,
+    @required this.telNumber,
   });
+
+  static List<String> get loadCategories {
+    return [
+      "Imóveis",
+      "Veiculos e Peças",
+      "Moda e Beleza",
+      "Eletrônicos e Celulares",
+      "Casa e Eletrodomésticos",
+      "Esporte e Lazer",
+      "Livros, Brinquedos e Variados"
+    ];
+  }
 }
