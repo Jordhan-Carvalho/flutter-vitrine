@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 // import '../providers/product.dart';
 import '../providers/products.dart';
 import '../models/products.dart';
+import '../widgets/image_capture.dart';
 
 class EditProductScreen extends StatefulWidget {
   static const routeName = '/edit-product';
@@ -354,6 +355,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           );
                         },
                       ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      ImageCapture(),
                     ],
                   ),
                 ),
