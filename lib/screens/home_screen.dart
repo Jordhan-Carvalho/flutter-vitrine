@@ -10,7 +10,7 @@ class HomeScreen extends StatelessWidget {
     final prod = Provider.of<Products>(context, listen: false).items;
 
     return GridView.builder(
-      padding: const EdgeInsets.all(2),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
       itemCount: prod.length,
       // use Changenotifier.value on grid and list
       itemBuilder: (ctx, index) => ProductItem(prod[index]),

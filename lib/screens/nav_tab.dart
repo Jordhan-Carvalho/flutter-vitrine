@@ -63,7 +63,7 @@ class _NavTabsState extends State<NavTabs> {
         currentIndex: _selectedPageIndex,
         elevation: 10,
         // Optional for effect
-        type: BottomNavigationBarType.shifting,
+        // type: BottomNavigationBarType.shifting,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),

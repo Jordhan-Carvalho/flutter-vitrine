@@ -131,8 +131,17 @@ class ProductDetailScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 10,
+              Padding(
+                padding: const EdgeInsets.only(left: 15.0),
+                child: Text(
+                  prod.category,
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColorDark,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 15,
+                  ),
+                  textAlign: TextAlign.start,
+                ),
               ),
               CardContainer(
                 height: 160,
@@ -196,26 +205,30 @@ class ProductDetailScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 50),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: <Widget>[
-                    IconButton(
-                      color: Colors.amber,
-                      icon: Icon(
-                        Icons.flag,
-                        color: Colors.red,
-                        size: 20,
-                      ),
-                      tooltip: 'Reportar',
-                      onPressed: () {},
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        IconButton(
+                          color: Colors.amber,
+                          icon: Icon(
+                            Icons.flag,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                          tooltip: 'Reportar',
+                          onPressed: () {},
+                        ),
+                        Text(
+                          'Reportar',
+                          style: TextStyle(
+                            fontSize: 12,
+                          ),
+                        )
+                      ],
                     ),
-                    Text(
-                      'Reportar',
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
-                    )
                   ],
                 ),
               ),
