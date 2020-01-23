@@ -39,26 +39,41 @@ class _UploaderState extends State<Uploader> {
                 ? event.bytesTransferred / event.totalByteCount
                 : 0;
 
-            return Expanded(
+            return Container(
+              width: 100,
+              height: 50,
               child: Column(
                 children: [
-                  if (_uploadTask.isComplete) Text('🎉🎉🎉'),
+                  if (_uploadTask.isComplete)
+                    FittedBox(child: Text('Completed!')),
 
                   if (_uploadTask.isPaused)
-                    FlatButton(
-                      child: Icon(Icons.play_arrow),
-                      onPressed: _uploadTask.resume,
+                    Expanded(
+                      child: FlatButton(
+                        child: Icon(
+                          Icons.play_arrow,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        onPressed: _uploadTask.resume,
+                      ),
                     ),
 
                   if (_uploadTask.isInProgress)
-                    FlatButton(
-                      child: Icon(Icons.pause),
-                      onPressed: _uploadTask.pause,
+                    Expanded(
+                      child: FlatButton(
+                        child: Icon(
+                          Icons.pause,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        onPressed: _uploadTask.pause,
+                      ),
                     ),
 
                   // Progress bar
                   LinearProgressIndicator(value: progressPercent),
-                  Text('${(progressPercent * 100).toStringAsFixed(2)} % '),
+                  FittedBox(
+                      child: Text(
+                          '${(progressPercent * 100).toStringAsFixed(2)} % ')),
                 ],
               ),
             );
@@ -66,7 +81,10 @@ class _UploaderState extends State<Uploader> {
     } else {
       return FlatButton.icon(
         label: Text('Upload'),
-        icon: Icon(Icons.cloud_upload),
+        icon: Icon(
+          Icons.cloud_upload,
+          color: Theme.of(context).iconTheme.color,
+        ),
         onPressed: _startUpload,
       );
     }

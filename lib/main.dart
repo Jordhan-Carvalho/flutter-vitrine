@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.amber,
           canvasColor: Color.fromRGBO(255, 254, 229, 1),
           fontFamily: 'RobotoCondensed',
+          iconTheme: IconThemeData(color: Colors.green),
           textTheme: ThemeData.light().textTheme.copyWith(
                 title: TextStyle(
                   fontFamily: 'RobotoCondensed',

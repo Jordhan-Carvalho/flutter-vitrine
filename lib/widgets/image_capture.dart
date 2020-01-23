@@ -48,9 +48,28 @@ class _ImageCaptureState extends State<ImageCapture> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
+        if (_imageFile != null)
+          Row(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.edit,
+                  color: Theme.of(context).iconTheme.color,
+                ),
+                onPressed: _cropImage,
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.insert_photo,
+                  color: Theme.of(context).iconTheme.color,
+                ),
+                onPressed: () => _pickImage(ImageSource.gallery),
+              ),
+            ],
+          ),
         Container(
           width: 150,
           height: 100,
@@ -91,42 +110,7 @@ class _ImageCaptureState extends State<ImageCapture> {
                   ],
                 ),
         ),
-        if (_imageFile != null)
-          IconButton(
-            icon: Icon(Icons.ac_unit),
-            onPressed: _cropImage,
-          ),
-        if (_imageFile != null)
-          Uploader(file: _imageFile),
-        // Container(
-        //   width: 150,
-        //   height: 100,
-        //   decoration: BoxDecoration(
-        //     border: Border.all(width: 1, color: Colors.grey),
-        //   ),
-        //   alignment: Alignment.center,
-        //   child: _imageFile != null
-        //       ? Image.file(
-        //           _imageFile,
-        //           fit: BoxFit.cover,
-        //           width: double.infinity,
-        //         )
-        //       : Column(
-        //           mainAxisAlignment: MainAxisAlignment.center,
-        //           children: <Widget>[
-        //             Text(
-        //               'Adicionar foto',
-        //               textAlign: TextAlign.center,
-        //             ),
-        //             FlatButton.icon(
-        //               icon: Icon(Icons.camera),
-        //               label: Text('Tirar foto'),
-        //               textColor: Theme.of(context).primaryColor,
-        //               onPressed: _pickImage,
-        //             ),
-        //           ],
-        //         ),
-        // ),
+        if (_imageFile != null) Uploader(file: _imageFile),
       ],
     );
   }
