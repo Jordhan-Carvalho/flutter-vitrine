@@ -5,7 +5,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class Uploader extends StatefulWidget {
   final File file;
-  Uploader({Key key, this.file}) : super(key: key);
+  final Function upComplete;
+  final Function getUrl;
+  Uploader({Key key, this.file, this.upComplete, this.getUrl})
+      : super(key: key);
 
   @override
   _UploaderState createState() => _UploaderState();
@@ -23,7 +26,10 @@ class _UploaderState extends State<Uploader> {
       _uploadTask = _storage.ref().child(filePath).putFile(widget.file);
     });
     var downurl = await (await _uploadTask.onComplete).ref.getDownloadURL();
+
+    widget.upComplete();
     print(downurl.toString());
+    widget.getUrl(downurl.toString());
   }
 
   @override
@@ -45,7 +51,7 @@ class _UploaderState extends State<Uploader> {
               child: Column(
                 children: [
                   if (_uploadTask.isComplete)
-                    FittedBox(child: Text('Completed!')),
+                    FittedBox(child: Text('Completado!')),
 
                   if (_uploadTask.isPaused)
                     Expanded(
@@ -80,7 +86,7 @@ class _UploaderState extends State<Uploader> {
           });
     } else {
       return FlatButton.icon(
-        label: Text('Upload'),
+        label: Text('Confirmar'),
         icon: Icon(
           Icons.cloud_upload,
           color: Theme.of(context).iconTheme.color,

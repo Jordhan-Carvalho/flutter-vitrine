@@ -7,7 +7,8 @@ import 'package:image_cropper/image_cropper.dart';
 import './uploader.dart';
 
 class ImageCapture extends StatefulWidget {
-  ImageCapture({Key key}) : super(key: key);
+  final Function getUrl;
+  ImageCapture({Key key, this.getUrl}) : super(key: key);
 
   @override
   _ImageCaptureState createState() => _ImageCaptureState();
@@ -15,6 +16,7 @@ class ImageCapture extends StatefulWidget {
 
 class _ImageCaptureState extends State<ImageCapture> {
   File _imageFile;
+  var _uploaded = false;
 
   Future<void> _pickImage(ImageSource imgSrc) async {
     var image = await ImagePicker.pickImage(source: imgSrc);
@@ -25,6 +27,12 @@ class _ImageCaptureState extends State<ImageCapture> {
 
     setState(() {
       _imageFile = image;
+    });
+  }
+
+  void _uploadComplete() {
+    setState(() {
+      _uploaded = true;
     });
   }
 
@@ -51,7 +59,7 @@ class _ImageCaptureState extends State<ImageCapture> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        if (_imageFile != null)
+        if (_imageFile != null && _uploaded == false)
           Row(
             children: <Widget>[
               IconButton(
@@ -71,8 +79,8 @@ class _ImageCaptureState extends State<ImageCapture> {
             ],
           ),
         Container(
-          width: 150,
-          height: 100,
+          width: 120,
+          height: 90,
           decoration: BoxDecoration(
             border: Border.all(width: 1, color: Colors.grey),
           ),
@@ -110,7 +118,12 @@ class _ImageCaptureState extends State<ImageCapture> {
                   ],
                 ),
         ),
-        if (_imageFile != null) Uploader(file: _imageFile),
+        if (_imageFile != null)
+          Uploader(
+            file: _imageFile,
+            upComplete: _uploadComplete,
+            getUrl: widget.getUrl,
+          ),
       ],
     );
   }

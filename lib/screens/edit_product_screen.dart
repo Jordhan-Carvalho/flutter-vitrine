@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // import '../providers/product.dart';
+import '../widgets/custom_stepper_buttons.dart';
 import '../providers/products.dart';
 import '../models/products.dart';
 import '../widgets/image_capture.dart';
@@ -55,14 +56,26 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.dispose();
   }
 
+  void _getImagesUrl(String imgUrl) {
+    _editedProd.imageUrl.add(imgUrl);
+  }
+
   bool _validateInputs([BuildContext ctx]) {
     if (_editedProd.category == null) {
       // None of the radio buttons was selected
       Scaffold.of(ctx)
         ..removeCurrentSnackBar()
         ..showSnackBar(SnackBar(
-          content: Text('Selecione uma categoria'),
-          duration: Duration(milliseconds: 1500),
+          content: Text('Selecione uma categoria !'),
+          duration: Duration(milliseconds: 2000),
+        ));
+      return false;
+    } else if (_editedProd.imageUrl.isEmpty) {
+      Scaffold.of(ctx)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text('Adicione ao menos 1 foto !'),
+          duration: Duration(milliseconds: 2000),
         ));
       return false;
     } else {
@@ -70,7 +83,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  void _saveForm() async {
+  void _saveForm([BuildContext ctx]) async {
+    if (!_validateInputs(ctx)) {
+      _validateInputs(ctx);
+      return;
+    }
+    if (!await _showConfirmation()) {
+      return;
+    }
+
     // _validateInputs();
     // final isValid = _formKeys[0].currentState.validate();
     // if (!isValid) {
@@ -78,6 +99,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     // }
     // _formKeys[0].currentState.save();
     // _formKeys[1].currentState.save();
+    print(_editedProd.imageUrl);
     print(_editedProd.id);
     print(_editedProd.title);
     print(_editedProd.category);
@@ -101,8 +123,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
         await showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: Text('An error occurred!'),
-            content: Text('Something went wrong'),
+            title: Text('Um erro ocorreu!'),
+            content: Text('Algo deu errado'),
             actions: <Widget>[
               FlatButton(
                 child: Text('Ok'),
@@ -117,6 +139,31 @@ class _EditProductScreenState extends State<EditProductScreen> {
       _isLoading = false;
     });
     Navigator.of(context).pop();
+  }
+
+  Future<bool> _showConfirmation() {
+    // returns a promisse with tru or false after the button is pressed
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text('Finalizar produto?'),
+              content:
+                  Text('Após finalizado, as fotos não poderão ser editadas'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Sim'),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+                FlatButton(
+                  child: Text('Não'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+              ],
+            ));
   }
 
   //STEPPER
@@ -148,44 +195,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
     setState(() => _currentStep = step);
   }
 
-  Widget _customButtons(BuildContext context,
-      {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          _currentStep == 1 // this is the last step
-              ? RaisedButton.icon(
-                  icon: Icon(Icons.create),
-                  onPressed: _saveForm,
-                  label: Text('CREATE'),
-                  color: Colors.green,
-                )
-              : RaisedButton.icon(
-                  icon: Icon(Icons.navigate_next),
-                  onPressed: onStepContinue,
-                  label: Text('CONTINUE'),
-                  color: Colors.pink,
-                ),
-          FlatButton.icon(
-            icon: Icon(Icons.delete_forever),
-            label: const Text('CANCEL'),
-            onPressed: onStepCancel,
-          )
-        ],
-      ),
-    );
-  }
-
   //STEPPER
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Product'),
+        title: Text('Editar Produto'),
       ),
       body: _isLoading
           ? Center(
@@ -204,12 +220,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         controlsBuilder: (BuildContext context,
                                 {VoidCallback onStepContinue,
                                 VoidCallback onStepCancel}) =>
-                            _customButtons(context,
-                                onStepContinue: () => _next(context),
-                                onStepCancel: _cancel),
+                            CustomStepperButtom(
+                          context,
+                          onStepContinue: () => _next(context),
+                          onStepCancel: _cancel,
+                          currentStep: _currentStep,
+                          saveForm: () => _saveForm(context),
+                        ),
                         steps: [
                           Step(
-                            title: const Text('New Account'),
+                            title: const Text('Informações gerais'),
                             isActive: _currentStep >= 0,
                             state: StepState.complete,
                             content: Form(
@@ -454,25 +474,27 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      ImageCapture(),
-                                      ImageCapture(),
-                                    ],
-                                  ),
+                                  if (_editedProd.imageUrl.isEmpty)
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: <Widget>[
+                                        ImageCapture(getUrl: _getImagesUrl),
+                                        ImageCapture(getUrl: _getImagesUrl),
+                                      ],
+                                    ),
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      ImageCapture(),
-                                      ImageCapture(),
-                                    ],
-                                  ),
+                                  if (_editedProd.imageUrl.isEmpty)
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: <Widget>[
+                                        ImageCapture(getUrl: _getImagesUrl),
+                                        ImageCapture(getUrl: _getImagesUrl),
+                                      ],
+                                    ),
                                 ],
                               ),
                             ),
