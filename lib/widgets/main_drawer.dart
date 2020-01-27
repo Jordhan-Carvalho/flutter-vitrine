@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 
 import '../screens/user_products_screen.dart';
-// import '../providers/auth.dart';
+import '../providers/auth.dart';
 
 class MainDrawer extends StatelessWidget {
   Widget _buildItem(
@@ -50,7 +50,7 @@ class MainDrawer extends StatelessWidget {
             () {
               Navigator.of(context).pop();
               Navigator.of(context).pushReplacementNamed('/');
-              // Provider.of<Auth>(context, listen: false).logout();
+              Provider.of<Auth>(context, listen: false).logout();
             },
             context,
           ),

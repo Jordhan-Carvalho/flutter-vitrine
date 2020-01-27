@@ -1,0 +1,133 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+class Auth with ChangeNotifier {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  String _token;
+  DateTime _expiryDate;
+  String _userId;
+  Timer _authTimer;
+
+  // String get token
+  bool isAuthenti;
+
+  bool get isAuth {
+    return token != null;
+  }
+
+  String get token {
+    if (_expiryDate != null &&
+        _expiryDate.isAfter(DateTime.now()) &&
+        _token != null) {
+      return _token;
+    }
+    return null;
+  }
+
+  String get userId {
+    return _userId;
+  }
+
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount googleSignInAccount =
+          await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+
+      final AuthResult authResult =
+          await _auth.signInWithCredential(credential);
+      final FirebaseUser user = authResult.user;
+
+      assert(!user.isAnonymous);
+      assert(await user.getIdToken() != null);
+
+      final FirebaseUser currentUser = await _auth.currentUser();
+      assert(user.uid == currentUser.uid);
+
+      final userData = await user.getIdToken(refresh: true);
+      print(userData);
+
+      _token = userData.token;
+      _userId = currentUser.uid;
+      _expiryDate = userData.expirationTime;
+
+      _autoLogout();
+      notifyListeners();
+
+      //store persistent data on phone
+      final prefs = await SharedPreferences.getInstance();
+      final userPref = json.encode({
+        'token': _token,
+        'userId': _userId,
+        'expiryDate': _expiryDate.toIso8601String(),
+      });
+      prefs.setString('userPref', userPref);
+      // print(user.displayName);
+      // print(user.email);
+      // print(user.isEmailVerified);
+      // print(user.uid);
+      // print(user.getIdToken());
+
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> tryAutoLogin() async {
+    Map<String, Object> extractedUserData;
+    DateTime expiryDate;
+
+    final prefs = await SharedPreferences.getInstance();
+
+    if (prefs.containsKey('userPref')) {
+      extractedUserData =
+          json.decode(prefs.getString('userPref')) as Map<String, Object>;
+      expiryDate = DateTime.parse(extractedUserData['expiryDate']);
+
+      if (expiryDate.isAfter(DateTime.now())) {
+        _token = extractedUserData['token'];
+        _userId = extractedUserData['userId'];
+        _expiryDate = expiryDate;
+        notifyListeners();
+        _autoLogout();
+      }
+    }
+  }
+
+  void logout() async {
+    _token = null;
+    _userId = null;
+    _expiryDate = null;
+    if (_authTimer != null) {
+      _authTimer.cancel();
+      _authTimer = null;
+    }
+    await googleSignIn.signOut();
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    // prefs.remove('userData');
+    prefs.clear();
+  }
+
+  void _autoLogout() {
+    if (_authTimer != null) {
+      // canceling existing timers if available
+      _authTimer.cancel();
+    }
+    final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
+    _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
+  }
+}
