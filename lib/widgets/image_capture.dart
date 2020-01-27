@@ -8,7 +8,9 @@ import './uploader.dart';
 
 class ImageCapture extends StatefulWidget {
   final Function getUrl;
-  ImageCapture({Key key, this.getUrl}) : super(key: key);
+  final String imgName;
+  ImageCapture({Key key, this.getUrl, @required this.imgName})
+      : super(key: key);
 
   @override
   _ImageCaptureState createState() => _ImageCaptureState();
@@ -19,7 +21,8 @@ class _ImageCaptureState extends State<ImageCapture> {
   var _uploaded = false;
 
   Future<void> _pickImage(ImageSource imgSrc) async {
-    var image = await ImagePicker.pickImage(source: imgSrc);
+    var image = await ImagePicker.pickImage(
+        source: imgSrc, maxHeight: 512, maxWidth: 512);
 
     if (image == null) {
       return;
@@ -123,6 +126,7 @@ class _ImageCaptureState extends State<ImageCapture> {
             file: _imageFile,
             upComplete: _uploadComplete,
             getUrl: widget.getUrl,
+            imgName: widget.imgName,
           ),
       ],
     );

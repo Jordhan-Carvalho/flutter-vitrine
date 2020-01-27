@@ -2,12 +2,21 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/auth.dart';
 
 class Uploader extends StatefulWidget {
   final File file;
   final Function upComplete;
   final Function getUrl;
-  Uploader({Key key, this.file, this.upComplete, this.getUrl})
+  final String imgName;
+  Uploader(
+      {Key key,
+      this.file,
+      this.upComplete,
+      this.getUrl,
+      @required this.imgName})
       : super(key: key);
 
   @override
@@ -20,7 +29,11 @@ class _UploaderState extends State<Uploader> {
   StorageUploadTask _uploadTask;
 
   void _startUpload() async {
-    String filePath = 'images/${DateTime.now()}.png';
+    final userId = Provider.of<Auth>(context, listen: false).userId;
+    //regex to remove all white spaces
+    String filePath =
+        'images/$userId/${widget.imgName.replaceAll(new RegExp(r"\s+\b|\b\s"), "")}.png';
+    print(filePath);
 
     setState(() {
       _uploadTask = _storage.ref().child(filePath).putFile(widget.file);

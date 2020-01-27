@@ -96,6 +96,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
       await Provider.of<Products>(context, listen: false)
           .updateProduct(_editedProd.id, _editedProd);
     } else {
+      // make the file name path
+      // String imgNamePath = '${_editedProd.description.substring(0, 10)}&${_editedProd.price}&${_editedProd.title}&2';
+      // uploadImages await and add on _editedProd
+      // insert URls on _editedProd
       try {
         await Provider.of<Products>(context, listen: false)
             .addProduct(_editedProd);
@@ -459,8 +463,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceAround,
                                       children: <Widget>[
-                                        ImageCapture(getUrl: _getImagesUrl),
-                                        ImageCapture(getUrl: _getImagesUrl),
+                                        ImageCapture(
+                                          getUrl: _getImagesUrl,
+                                          imgName:
+                                              '${_editedProd.description}&${_editedProd.price}&${_editedProd.title}&0',
+                                        ),
+                                        ImageCapture(
+                                          getUrl: _getImagesUrl,
+                                          imgName:
+                                              '${_editedProd.description}&${_editedProd.price}&${_editedProd.title}&1',
+                                        ),
                                       ],
                                     ),
                                   SizedBox(
@@ -471,8 +483,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceAround,
                                       children: <Widget>[
-                                        ImageCapture(getUrl: _getImagesUrl),
-                                        ImageCapture(getUrl: _getImagesUrl),
+                                        ImageCapture(
+                                          getUrl: _getImagesUrl,
+                                          imgName:
+                                              '${_editedProd.description}&${_editedProd.price}&${_editedProd.title}&2',
+                                        ),
+                                        ImageCapture(
+                                          getUrl: _getImagesUrl,
+                                          imgName:
+                                              '${_editedProd.description}&${_editedProd.price}&${_editedProd.title}&3',
+                                        ),
                                       ],
                                     ),
                                 ],

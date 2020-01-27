@@ -9,8 +9,18 @@ class Products with ChangeNotifier {
   final FirebaseStorage _storage =
       FirebaseStorage(storageBucket: 'gs://vitrine-3da15.appspot.com');
   StorageUploadTask _uploadTask;
-
   List<Product> _items = [];
+
+  String _authToken;
+  String _userId;
+
+  set authToken(String value) {
+    _authToken = value;
+  }
+
+  set userId(String value) {
+    _userId = value;
+  }
 
   List<Product> get items {
     return [..._items];
@@ -35,6 +45,7 @@ class Products with ChangeNotifier {
         "telNumber": prod.telNumber,
         "tradable": prod.tradable,
         "imageUrl": prod.imageUrl,
+        "ownerId": _userId,
       });
 
       _items.insert(
@@ -59,10 +70,17 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> fetchProducts() async {
+  Future<void> fetchProducts([bool filterByUser = false]) async {
+    QuerySnapshot resp;
     try {
-      QuerySnapshot resp =
-          await _firestore.collection('products').getDocuments();
+      if (filterByUser) {
+        resp = await _firestore
+            .collection('products')
+            .where("ownerId", isEqualTo: _userId)
+            .getDocuments();
+      } else {
+        resp = await _firestore.collection('products').getDocuments();
+      }
 
       var loadedProds = <Product>[];
 
@@ -123,11 +141,19 @@ class Products with ChangeNotifier {
     _items.removeAt(prodIndex);
     notifyListeners();
     try {
+      //img path is /images/userId/description&price&title&1 => the number changes 1,2,3,4
+      existingProd.imageUrl.forEach((imgUl) => print(imgUl));
+      for (var i = 0; i < existingProd.imageUrl.length; i++) {
+        String imgPath =
+            'images/$_userId/${existingProd.description}&${existingProd.price}&${existingProd.title}&$i.png';
+        //regex remove white spaces
+        print(imgPath.replaceAll(new RegExp(r"\s+\b|\b\s"), ""));
+        await _storage
+            .ref()
+            .child(imgPath.replaceAll(new RegExp(r"\s+\b|\b\s"), ""))
+            .delete();
+      }
       await _firestore.collection('products').document(id).delete();
-
-      // TO DO -- After auth modify uploader.dart /images/userId/price+description+title
-      //  await _storage.ref().child(filePath).delete();
-
     } catch (e) {
       _items.insert(prodIndex, existingProd);
       notifyListeners();

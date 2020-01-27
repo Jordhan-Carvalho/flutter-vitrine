@@ -22,9 +22,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => Auth(),
         ),
-        ChangeNotifierProvider(
-          create: (ctx) => Products(),
-        )
+        ChangeNotifierProxyProvider<Auth, Products>(
+            create: (_) => Products(),
+            update: (ctx, authData, prevProds) {
+              prevProds..authToken = authData.token;
+              prevProds..userId = authData.userId;
+              return prevProds;
+            }),
       ],
       // whenever auth changes, call rebuild
       child: Consumer<Auth>(
