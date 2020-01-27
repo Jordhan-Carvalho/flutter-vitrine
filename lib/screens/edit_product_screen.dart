@@ -15,8 +15,6 @@ class EditProductScreen extends StatefulWidget {
 
 class _EditProductScreenState extends State<EditProductScreen> {
   final _priceFocusNode = FocusNode();
-  // Global key to interact with a widget inside the code, in this case Form
-  // final _form = GlobalKey<FormState>();
   List<GlobalKey<FormState>> _formKeys = [
     GlobalKey<FormState>(),
     GlobalKey<FormState>()
@@ -62,7 +60,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   bool _validateInputs([BuildContext ctx]) {
     if (_editedProd.category == null) {
-      // None of the radio buttons was selected
       Scaffold.of(ctx)
         ..removeCurrentSnackBar()
         ..showSnackBar(SnackBar(
@@ -70,11 +67,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
           duration: Duration(milliseconds: 2000),
         ));
       return false;
-    } else if (_editedProd.imageUrl.isEmpty) {
+    } else if (_editedProd.imageUrl.isEmpty && _currentStep == 1) {
       Scaffold.of(ctx)
         ..removeCurrentSnackBar()
         ..showSnackBar(SnackBar(
-          content: Text('Adicione ao menos 1 foto !'),
+          content: Text('Adicione ao menos uma foto !'),
           duration: Duration(milliseconds: 2000),
         ));
       return false;
@@ -92,33 +89,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
 
-    // _validateInputs();
-    // final isValid = _formKeys[0].currentState.validate();
-    // if (!isValid) {
-    //   return;
-    // }
-    // _formKeys[0].currentState.save();
-    // _formKeys[1].currentState.save();
-    print(_editedProd.imageUrl);
-    print(_editedProd.id);
-    print(_editedProd.title);
-    print(_editedProd.category);
-    print(_editedProd.condition);
-    print(_editedProd.delivery);
-    print(_editedProd.description);
-    print(_editedProd.price);
-    print(_editedProd.telNumber);
-
     setState(() {
       _isLoading = true;
     });
     if (_editedProd.id != null) {
-      // await Provider.of<Products>(context, listen: false)
-      //     .updateProduct(_editedProd.id, _editedProd);
+      await Provider.of<Products>(context, listen: false)
+          .updateProduct(_editedProd.id, _editedProd);
     } else {
       try {
-        // await Provider.of<Products>(context, listen: false)
-        //     .addProduct(_editedProd);
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProd);
       } catch (e) {
         await showDialog(
           context: context,
@@ -142,7 +122,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   Future<bool> _showConfirmation() {
-    // returns a promisse with tru or false after the button is pressed
+    // returns a promisse(Future) with tru or false after the button is pressed
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(

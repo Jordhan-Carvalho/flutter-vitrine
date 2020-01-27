@@ -28,7 +28,6 @@ class _UploaderState extends State<Uploader> {
     var downurl = await (await _uploadTask.onComplete).ref.getDownloadURL();
 
     widget.upComplete();
-    print(downurl.toString());
     widget.getUrl(downurl.toString());
   }
 
