@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 // import '../providers/product.dart';
 import '../widgets/custom_stepper_buttons.dart';
 import '../providers/products.dart';
 import '../models/products.dart';
 import '../widgets/image_capture.dart';
+import '../providers/auth.dart';
 
 class EditProductScreen extends StatefulWidget {
   static final routeName = '/test';
@@ -19,6 +23,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
     GlobalKey<FormState>(),
     GlobalKey<FormState>()
   ];
+  final FirebaseStorage _storage =
+      FirebaseStorage(storageBucket: 'gs://vitrine-3da15.appspot.com');
+  StorageUploadTask _uploadTask;
+
   var _editedProd = Product(
     id: null,
     title: '',
@@ -32,6 +40,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     tradable: false,
   );
   bool _autoValidate = false;
+  List<File> _filesArray = [];
   var _isInit = true;
   var _isLoading = false;
 
@@ -54,10 +63,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.dispose();
   }
 
-  void _getImagesUrl(String imgUrl) {
-    _editedProd.imageUrl.add(imgUrl);
-  }
-
   bool _validateInputs([BuildContext ctx]) {
     if (_editedProd.category == null) {
       Scaffold.of(ctx)
@@ -67,7 +72,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           duration: Duration(milliseconds: 2000),
         ));
       return false;
-    } else if (_editedProd.imageUrl.isEmpty && _currentStep == 1) {
+    } else if (_filesArray.isEmpty && _currentStep == 1) {
       Scaffold.of(ctx)
         ..removeCurrentSnackBar()
         ..showSnackBar(SnackBar(
@@ -78,6 +83,19 @@ class _EditProductScreenState extends State<EditProductScreen> {
     } else {
       return true;
     }
+  }
+
+  void _addFileToArray(File file) {
+    _filesArray.add(file);
+  }
+
+  Future<void> _startUpload({String imageName, File file}) async {
+    setState(() {
+      _uploadTask = _storage.ref().child(imageName).putFile(file);
+    });
+    var downurl = await (await _uploadTask.onComplete).ref.getDownloadURL();
+
+    _editedProd.imageUrl.add(downurl.toString());
   }
 
   void _saveForm([BuildContext ctx]) async {
@@ -96,11 +114,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
       await Provider.of<Products>(context, listen: false)
           .updateProduct(_editedProd.id, _editedProd);
     } else {
-      // make the file name path
-      // String imgNamePath = '${_editedProd.description.substring(0, 10)}&${_editedProd.price}&${_editedProd.title}&2';
-      // uploadImages await and add on _editedProd
-      // insert URls on _editedProd
       try {
+        // Loop thru an array of files and for each upload the file and add the url on _editProd
+        final String _userId = Provider.of<Auth>(context, listen: false).userId;
+        for (var i = 0; i < _filesArray.length; i++) {
+          String imgNamePath =
+              'images/$_userId/${_editedProd.description.substring(0, 15)}&${_editedProd.price}&${_editedProd.title}$i';
+          await _startUpload(
+              imageName: imgNamePath.replaceAll(new RegExp(r"\s+\b|\b\s"), ""),
+              file: _filesArray[i]);
+        }
         await Provider.of<Products>(context, listen: false)
             .addProduct(_editedProd);
       } catch (e) {
@@ -464,14 +487,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                           MainAxisAlignment.spaceAround,
                                       children: <Widget>[
                                         ImageCapture(
-                                          getUrl: _getImagesUrl,
-                                          imgName:
-                                              '${_editedProd.description}&${_editedProd.price}&${_editedProd.title}&0',
+                                          addFile: _addFileToArray,
                                         ),
                                         ImageCapture(
-                                          getUrl: _getImagesUrl,
-                                          imgName:
-                                              '${_editedProd.description}&${_editedProd.price}&${_editedProd.title}&1',
+                                          addFile: _addFileToArray,
                                         ),
                                       ],
                                     ),
@@ -484,14 +503,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                           MainAxisAlignment.spaceAround,
                                       children: <Widget>[
                                         ImageCapture(
-                                          getUrl: _getImagesUrl,
-                                          imgName:
-                                              '${_editedProd.description}&${_editedProd.price}&${_editedProd.title}&2',
+                                          addFile: _addFileToArray,
                                         ),
                                         ImageCapture(
-                                          getUrl: _getImagesUrl,
-                                          imgName:
-                                              '${_editedProd.description}&${_editedProd.price}&${_editedProd.title}&3',
+                                          addFile: _addFileToArray,
                                         ),
                                       ],
                                     ),

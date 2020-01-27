@@ -7,10 +7,8 @@ import 'package:image_cropper/image_cropper.dart';
 import './uploader.dart';
 
 class ImageCapture extends StatefulWidget {
-  final Function getUrl;
-  final String imgName;
-  ImageCapture({Key key, this.getUrl, @required this.imgName})
-      : super(key: key);
+  final Function addFile;
+  ImageCapture({Key key, @required this.addFile}) : super(key: key);
 
   @override
   _ImageCaptureState createState() => _ImageCaptureState();
@@ -27,6 +25,8 @@ class _ImageCaptureState extends State<ImageCapture> {
     if (image == null) {
       return;
     }
+
+    widget.addFile(image);
 
     setState(() {
       _imageFile = image;
@@ -121,13 +121,6 @@ class _ImageCaptureState extends State<ImageCapture> {
                   ],
                 ),
         ),
-        if (_imageFile != null)
-          Uploader(
-            file: _imageFile,
-            upComplete: _uploadComplete,
-            getUrl: widget.getUrl,
-            imgName: widget.imgName,
-          ),
       ],
     );
   }
