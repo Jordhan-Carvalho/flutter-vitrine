@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
           title: 'Vitrine',
           theme: ThemeData(
             primarySwatch: Colors.green,
-            accentColor: Colors.amber,
+            accentColor: Colors.greenAccent,
             canvasColor: Color.fromRGBO(255, 254, 229, 1),
             fontFamily: 'RobotoCondensed',
             iconTheme: IconThemeData(color: Colors.green),

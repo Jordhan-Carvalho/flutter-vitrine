@@ -1,30 +1,87 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/sign_in_button.dart';
+import '../widgets/auth_card.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   static const routeName = '/login';
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
+  const LoginScreen({Key key}) : super(key: key);
 
-class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
+    // final transformConfig = Matrix4.rotationZ(-8 * pi / 180);
+    // transformConfig.translate(-10.0);
     return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              FlutterLogo(size: 150),
-              SizedBox(height: 50),
-              SignInButton(),
-            ],
+      // resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromRGBO(230, 255, 230, 1).withOpacity(0.5),
+                  Color.fromRGBO(69, 252, 3, 1).withOpacity(0.9),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                stops: [0, 1],
+              ),
+            ),
           ),
-        ),
+          SingleChildScrollView(
+            child: Container(
+              height: deviceSize.height,
+              width: deviceSize.width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Flexible(
+                    child: Transform.rotate(
+                      angle: -0.15,
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 20.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 94.0),
+                        //COULD BE USED INSTEAD OF TRASNFORM.ROTATE
+                        // transform: Matrix4.rotationZ(-8 * pi / 180)
+                        //   ..translate(-10.0),
+                        // // ..translate(-10.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Theme.of(context).primaryColor,
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 8,
+                              color: Colors.black26,
+                              offset: Offset(0, 2),
+                            )
+                          ],
+                        ),
+                        child: Text(
+                          'Vitrine',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 55,
+                            fontFamily: 'RobotoCondensed',
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Flexible(
+                    flex: deviceSize.width > 600 ? 2 : 1,
+                    child: AuthCard(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

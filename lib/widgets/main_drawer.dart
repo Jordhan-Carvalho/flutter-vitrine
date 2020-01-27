@@ -46,7 +46,7 @@ class MainDrawer extends StatelessWidget {
           ),
           _buildItem(
             Icons.exit_to_app,
-            'Logout',
+            'Sair',
             () {
               Navigator.of(context).pop();
               Navigator.of(context).pushReplacementNamed('/');

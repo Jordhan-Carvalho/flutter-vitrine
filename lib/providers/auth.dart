@@ -75,12 +75,6 @@ class Auth with ChangeNotifier {
         'expiryDate': _expiryDate.toIso8601String(),
       });
       prefs.setString('userPref', userPref);
-      // print(user.displayName);
-      // print(user.email);
-      // print(user.isEmailVerified);
-      // print(user.uid);
-      // print(user.getIdToken());
-
     } catch (e) {
       throw e;
     }
