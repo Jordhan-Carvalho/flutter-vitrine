@@ -8,7 +8,6 @@ class Products with ChangeNotifier {
   Firestore _firestore = Firestore.instance;
   final FirebaseStorage _storage =
       FirebaseStorage(storageBucket: 'gs://vitrine-3da15.appspot.com');
-  StorageUploadTask _uploadTask;
   List<Product> _items = [];
 
   String _authToken;
@@ -145,7 +144,7 @@ class Products with ChangeNotifier {
       existingProd.imageUrl.forEach((imgUl) => print(imgUl));
       for (var i = 0; i < existingProd.imageUrl.length; i++) {
         String imgPath =
-            'images/$_userId/${existingProd.description}&${existingProd.price}&${existingProd.title}&$i.png';
+            'images/$_userId/${existingProd.description.substring(0, 15)}&${existingProd.price}&${existingProd.title}&$i';
         //regex remove white spaces
         print(imgPath.replaceAll(new RegExp(r"\s+\b|\b\s"), ""));
         await _storage

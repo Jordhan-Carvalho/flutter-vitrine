@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 
-import './uploader.dart';
-
 class ImageCapture extends StatefulWidget {
   final Function addFile;
   ImageCapture({Key key, @required this.addFile}) : super(key: key);
@@ -16,26 +14,27 @@ class ImageCapture extends StatefulWidget {
 
 class _ImageCaptureState extends State<ImageCapture> {
   File _imageFile;
-  var _uploaded = false;
+  int _fileIndex;
 
   Future<void> _pickImage(ImageSource imgSrc) async {
     var image = await ImagePicker.pickImage(
-        source: imgSrc, maxHeight: 512, maxWidth: 512);
+      source: imgSrc,
+      maxHeight: 512,
+      maxWidth: 512,
+      imageQuality: 90,
+    );
 
     if (image == null) {
       return;
     }
-
-    widget.addFile(image);
+    if (_fileIndex == null) {
+      _fileIndex = widget.addFile(file: image);
+    } else {
+      widget.addFile(file: image, fileIndex: _fileIndex);
+    }
 
     setState(() {
       _imageFile = image;
-    });
-  }
-
-  void _uploadComplete() {
-    setState(() {
-      _uploaded = true;
     });
   }
 
@@ -52,6 +51,7 @@ class _ImageCaptureState extends State<ImageCapture> {
           toolbarTitle: 'Modificar foto'),
     );
 
+    widget.addFile(file: cropped ?? _imageFile, fileIndex: _fileIndex);
     setState(() {
       _imageFile = cropped ?? _imageFile;
     });
@@ -62,7 +62,7 @@ class _ImageCaptureState extends State<ImageCapture> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        if (_imageFile != null && _uploaded == false)
+        if (_imageFile != null)
           Row(
             children: <Widget>[
               IconButton(

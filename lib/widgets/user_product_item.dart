@@ -10,6 +10,30 @@ class UserProductItem extends StatelessWidget {
 
   UserProductItem(this.prod);
 
+  Future<bool> _deleteConfirmation(BuildContext ctx) {
+    // returns a promisse with tru or false after the button is pressed
+    return showDialog(
+        context: ctx,
+        builder: (context) => AlertDialog(
+              title: Text('Tem certeza?'),
+              content: Text('Quer mesmo apagar esse produto?'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Sim'),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+                FlatButton(
+                  child: Text('Não'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+              ],
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -31,7 +55,10 @@ class UserProductItem extends StatelessWidget {
             ),
             IconButton(
               icon: Icon(Icons.delete),
-              onPressed: () {
+              onPressed: () async {
+                if (!await _deleteConfirmation(context)) {
+                  return;
+                }
                 Provider.of<Products>(context, listen: false)
                     .deleteProduct(prod.id);
               },

@@ -85,8 +85,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  void _addFileToArray(File file) {
-    _filesArray.add(file);
+  int _addFileToArray({File file, int fileIndex}) {
+    if (fileIndex == null) {
+      _filesArray.add(file);
+      return _filesArray.indexOf(file);
+    }
+    _filesArray[fileIndex] = file;
+    return -1;
   }
 
   Future<void> _startUpload({String imageName, File file}) async {
@@ -119,7 +124,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         final String _userId = Provider.of<Auth>(context, listen: false).userId;
         for (var i = 0; i < _filesArray.length; i++) {
           String imgNamePath =
-              'images/$_userId/${_editedProd.description.substring(0, 15)}&${_editedProd.price}&${_editedProd.title}$i';
+              'images/$_userId/${_editedProd.description.substring(0, 15)}&${_editedProd.price}&${_editedProd.title}&$i';
           await _startUpload(
               imageName: imgNamePath.replaceAll(new RegExp(r"\s+\b|\b\s"), ""),
               file: _filesArray[i]);
@@ -127,6 +132,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         await Provider.of<Products>(context, listen: false)
             .addProduct(_editedProd);
       } catch (e) {
+        print(e);
         await showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
@@ -420,7 +426,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       if (value.isEmpty) {
                                         return 'Por favor preencha o campo';
                                       }
-                                      if (value.length < 10) {
+                                      if (value.length < 15) {
                                         return 'Por favor aumente a sua descrição.';
                                       }
                                       return null;
