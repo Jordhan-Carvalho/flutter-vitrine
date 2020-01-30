@@ -10,6 +10,7 @@ class Products with ChangeNotifier {
       FirebaseStorage(storageBucket: 'gs://vitrine-3da15.appspot.com');
   List<Product> _items = [];
   List<Product> _favItems = [];
+  List<Product> _categoryItems = [];
 
   String _authToken;
   String _userId;
@@ -28,6 +29,10 @@ class Products with ChangeNotifier {
 
   List<Product> get favoriteItems {
     return [..._favItems];
+  }
+
+  List<Product> get categoryItems {
+    return [..._categoryItems];
   }
 
   Product findById(String id) {
@@ -295,6 +300,45 @@ class Products with ChangeNotifier {
     } catch (e) {
       _favItems.insert(favIndex, existingFav);
       notifyListeners();
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<void> fetchCategory(String category) async {
+    try {
+      QuerySnapshot resp = await _firestore
+          .collection('products')
+          .where('category', isEqualTo: category)
+          .getDocuments();
+
+      print(resp.documents.length);
+      print(category);
+
+      var categoryProds = <Product>[];
+
+      resp.documents.forEach((item) {
+        categoryProds.add(Product(
+          id: item.documentID,
+          condition: item.data['condition'] == "Usado"
+              ? Condition.Usado
+              : Condition.Novo,
+          category: item.data['category'],
+          delivery: item.data['delivery'],
+          description: item.data['description'],
+          price: item.data['price'],
+          telNumber: item.data['telNumber'],
+          title: item.data['title'],
+          tradable: item.data['tradable'],
+          city: item.data['city'] == "Barreiras" ? City.Barreiras : City.LEM,
+          createdOn: DateTime.parse(item.data['createdOn']),
+          imageUrl: item.data['imageUrl'].cast<String>(),
+        ));
+      });
+
+      _categoryItems = categoryProds;
+      notifyListeners();
+    } catch (e) {
       print(e);
       throw e;
     }

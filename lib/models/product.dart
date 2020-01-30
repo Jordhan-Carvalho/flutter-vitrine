@@ -4,10 +4,19 @@ enum Condition { Novo, Usado }
 
 enum City { Barreiras, LEM }
 
+enum Category {
+  Imoveis,
+  VeiculosPecas,
+  ModaBeleza,
+  EletronicosCelulares,
+  CasaEletrodomesticos,
+  EsporteLazer,
+  LivrosBrinquedosVariados
+}
 // Dart doesnt support enum to store numbers or strings  https://github.com/dart-lang/language/issues/158
 // enum Category { Imóveis, }
 
-class Product with ChangeNotifier {
+class Product {
   final String id;
   String title;
   int price;
@@ -43,7 +52,7 @@ class Product with ChangeNotifier {
       "Veiculos e Peças",
       "Moda e Beleza",
       "Eletrônicos e Celulares",
-      "Casa e Eletrodomésticos",
+      "Para casa",
       "Esporte e Lazer",
       "Livros, Brinquedos e Variados"
     ];

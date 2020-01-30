@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
+import './screens/categorie_overview_screen.dart';
+import './widgets/comming_soon.dart';
 import './screens/auth_screen.dart';
 import './widgets/splash_screen.dart';
 import './screens/edit_product_screen.dart';
@@ -63,7 +65,10 @@ class MyApp extends StatelessWidget {
             ProductDetailScreen.routeName: (_) => ProductDetailScreen(),
             EditProductScreen.routeName: (_) => EditProductScreen(),
             LoginScreen.routeName: (_) => LoginScreen(),
+            CategorieOverviewScreen.routeName: (_) => CategorieOverviewScreen(),
           },
+          onUnknownRoute: (RouteSettings rs) =>
+              new MaterialPageRoute(builder: (context) => ComingSoon()),
         ),
       ),
     );

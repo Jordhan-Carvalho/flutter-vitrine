@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import './services_screen.dart';
+import './market_screen.dart';
 import './edit_product_screen.dart';
 import './favorites_screen.dart';
 import './categories_screen.dart';
@@ -22,6 +24,8 @@ class _NavTabsState extends State<NavTabs> {
     _pages = [
       {'page': HomeScreen(), 'title': 'Vitrine'},
       {'page': CategoriesScreen(), 'title': 'Categorias'},
+      {'page': MarketScreen(), 'title': 'Lojas'},
+      {'page': ServicesScreen(), 'title': 'Serviços'},
       {'page': FavoritesScreen(), 'title': 'Favoritos'},
     ];
     super.initState();
@@ -37,20 +41,20 @@ class _NavTabsState extends State<NavTabs> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(_pages[_selectedPageIndex]['title']),
         actions: <Widget>[
-          RaisedButton(
-            child: Row(
-              children: <Widget>[
-                Text('Vender'),
-                Icon(Icons.attach_money),
-              ],
+          FlatButton(
+            child: Text(
+              '\$ Vender',
+              style: TextStyle(color: Colors.white),
             ),
-            color: Theme.of(context).primaryColor,
-            textColor: Colors.white,
             onPressed: () =>
                 Navigator.of(context).pushNamed(EditProductScreen.routeName),
-          )
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50.0),
+            ),
+          ),
         ],
       ),
       drawer: MainDrawer(),
@@ -63,7 +67,7 @@ class _NavTabsState extends State<NavTabs> {
         currentIndex: _selectedPageIndex,
         elevation: 10,
         // Optional for effect
-        // type: BottomNavigationBarType.shifting,
+        type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
@@ -72,6 +76,14 @@ class _NavTabsState extends State<NavTabs> {
           BottomNavigationBarItem(
             icon: Icon(Icons.category),
             title: Text('Categorias'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.store),
+            title: Text('Lojas'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.supervisor_account),
+            title: Text('Serviços'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.star),

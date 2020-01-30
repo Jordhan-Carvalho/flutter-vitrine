@@ -56,6 +56,13 @@ flutter:
   assets:
     - assets/images/product-placeholder.png
     - assets/images/google_logo.png
+    - assets/images/imoveis.jpg
+    - assets/images/eletronicos.jpg
+    - assets/images/casa.jpg
+    - assets/images/esporte.jpg
+    - assets/images/moda.jpg
+    - assets/images/variados.jpg
+    - assets/images/veic.jpg
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
