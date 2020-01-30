@@ -6,8 +6,8 @@ import '../providers/products.dart';
 import '../models/product.dart';
 
 class FavoriteButton extends StatefulWidget {
-  final prodId;
-  FavoriteButton({Key key, @required this.prodId}) : super(key: key);
+  final Product prod;
+  FavoriteButton({Key key, @required this.prod}) : super(key: key);
 
   @override
   _FavoriteButtonState createState() => _FavoriteButtonState();
@@ -22,7 +22,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
       favoriteItems.forEach((favItem) {
         favoriteItemsIds.add(favItem.id);
       });
-      if (favoriteItemsIds.contains(widget.prodId)) {
+      if (favoriteItemsIds.contains(widget.prod.id)) {
         isFavorite = true;
       } else {
         isFavorite = false;
@@ -51,10 +51,10 @@ class _FavoriteButtonState extends State<FavoriteButton> {
       handlePress: () async {
         if (isFavorite) {
           await Provider.of<Products>(context, listen: false)
-              .deleteFavorite(widget.prodId);
+              .deleteFavorite(widget.prod.id);
         } else {
           await Provider.of<Products>(context, listen: false)
-              .addFavorite(widget.prodId);
+              .addFavorite(widget.prod);
         }
         setState(() {
           isFavorite = !isFavorite;

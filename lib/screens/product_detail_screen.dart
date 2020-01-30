@@ -171,7 +171,7 @@ class ProductDetailScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   FavoriteButton(
-                    prodId: prod.id,
+                    prod: prod,
                   ),
                   ThemeButton(
                     content: Row(

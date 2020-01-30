@@ -4,48 +4,48 @@ import 'package:provider/provider.dart';
 import '../providers/products.dart';
 import '../widgets/product_item.dart';
 
-class FavoritesScreen extends StatelessWidget {
-  Future<void> _fetchProducts(BuildContext ctx) async {
-    await Provider.of<Products>(ctx, listen: false).fetchFavorites();
+class FavoritesScreen extends StatefulWidget {
+  @override
+  _FavoritesScreenState createState() => _FavoritesScreenState();
+}
+
+class _FavoritesScreenState extends State<FavoritesScreen>
+    with AutomaticKeepAliveClientMixin<FavoritesScreen> {
+  bool _isLoading = false;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    print('init');
+    _fetchProducts();
+    super.initState();
+  }
+
+  Future<void> _fetchProducts() async {
+    await Provider.of<Products>(context, listen: false).fetchFavorites();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _fetchProducts(context),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            if (snapshot.error != null) {
-              // ...error handling
-              return Center(
-                child: Text('Error'),
-              );
-            } else {
-              return RefreshIndicator(
-                onRefresh: () => _fetchProducts(context),
-                child: Consumer<Products>(
-                  builder: (ctx, productData, child) => GridView.builder(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
-                    itemCount: productData.favoriteItems.length,
-                    // use Changenotifier.value on grid and list
-                    itemBuilder: (ctx, index) =>
-                        ProductItem(productData.favoriteItems[index]),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1.4,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                    ),
-                  ),
-                ),
-              );
-            }
-          }
-        });
+    super.build(context); // because we use the keep alive mixin.
+    return _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : Consumer<Products>(
+            builder: (ctx, productData, child) => GridView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
+              itemCount: productData.favoriteItems.length,
+              // use Changenotifier.value on grid and list
+              itemBuilder: (ctx, index) =>
+                  ProductItem(productData.favoriteItems[index]),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+            ),
+          );
   }
 }

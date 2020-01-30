@@ -96,7 +96,7 @@ class Products with ChangeNotifier {
           print('No More Products');
           return;
         }
-        print(lastDocument);
+        print('fetching');
         if (lastDocument == null) {
           querySnapshot = await _firestore
               .collection('products')
@@ -215,15 +215,30 @@ class Products with ChangeNotifier {
           .collection('userSettings')
           .document('$_userId')
           .collection('favorites')
-          .where("isFavorite", isEqualTo: true)
           .getDocuments();
+      print(resp.documents.length);
 
       var favoriteProds = <Product>[];
 
       resp.documents.forEach((item) {
-        favoriteProds
-            .add(_items.firstWhere((pro) => pro.id == item.documentID));
+        favoriteProds.add(Product(
+          id: item.documentID,
+          condition: item.data['condition'] == "Usado"
+              ? Condition.Usado
+              : Condition.Novo,
+          category: item.data['category'],
+          delivery: item.data['delivery'],
+          description: item.data['description'],
+          price: item.data['price'],
+          telNumber: item.data['telNumber'],
+          title: item.data['title'],
+          tradable: item.data['tradable'],
+          city: item.data['city'] == "Barreiras" ? City.Barreiras : City.LEM,
+          createdOn: DateTime.parse(item.data['createdOn']),
+          imageUrl: item.data['imageUrl'].cast<String>(),
+        ));
       });
+      print(favoriteProds.length);
       _favItems = favoriteProds;
       notifyListeners();
     } catch (e) {
@@ -232,16 +247,28 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> addFavorite(String prodId) async {
+  Future<void> addFavorite(Product prod) async {
     try {
       await _firestore
           .collection('userSettings')
           .document('$_userId')
           .collection('favorites')
-          .document(prodId)
-          .setData({"isFavorite": true});
+          .document(prod.id)
+          .setData({
+        "title": prod.title,
+        "telNumber": prod.telNumber,
+        "condition": prod.condition == Condition.Usado ? "Usado" : "Novo",
+        "category": prod.category,
+        "delivery": prod.delivery,
+        "description": prod.description,
+        "price": prod.price,
+        "tradable": prod.tradable,
+        "imageUrl": prod.imageUrl,
+        "createdOn": prod.createdOn.toIso8601String(),
+        "city": prod.city == City.Barreiras ? "Barreiras" : "LEM",
+      });
 
-      _favItems.insert(0, _items.firstWhere((pro) => pro.id == prodId));
+      _favItems.insert(0, prod);
 
       print("added to favorites");
       notifyListeners();

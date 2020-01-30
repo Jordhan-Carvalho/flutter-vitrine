@@ -12,12 +12,16 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with AutomaticKeepAliveClientMixin<HomeScreen> {
   ScrollController _scrollController = ScrollController();
   bool _hasMore = true;
   bool _isLoading = false;
 
   DocumentSnapshot _lastDocument;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -37,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       _fetchProducts();
-      double newPos = _scrollController.position.pixels - 40;
+      double newPos = _scrollController.position.pixels - 50;
       _scrollController.position
           .moveTo(newPos, duration: Duration(milliseconds: 1500));
     }
@@ -63,6 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return _isLoading
         ? Center(
             child: CircularProgressIndicator(),
