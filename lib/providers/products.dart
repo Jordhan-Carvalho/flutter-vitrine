@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import '../models/products.dart';
+import '../models/product.dart';
 
 class Products with ChangeNotifier {
   Firestore _firestore = Firestore.instance;
   final FirebaseStorage _storage =
       FirebaseStorage(storageBucket: 'gs://vitrine-3da15.appspot.com');
   List<Product> _items = [];
+  List<Product> _favItems = [];
 
   String _authToken;
   String _userId;
@@ -23,6 +24,10 @@ class Products with ChangeNotifier {
 
   List<Product> get items {
     return [..._items];
+  }
+
+  List<Product> get favoriteItems {
+    return [..._favItems];
   }
 
   Product findById(String id) {
@@ -69,21 +74,58 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> fetchProducts([bool filterByUser = false]) async {
-    QuerySnapshot resp;
+  Future<void> fetchProducts({
+    bool filterByUser = false,
+    bool hasMore,
+    Function hasMoreCallback,
+    DocumentSnapshot lastDocument,
+    Function lastDocumentCallback,
+    bool refresh = false,
+  }) async {
+    QuerySnapshot querySnapshot;
+
     try {
       if (filterByUser) {
-        resp = await _firestore
+        querySnapshot = await _firestore
             .collection('products')
             .where("ownerId", isEqualTo: _userId)
+            .orderBy("createdOn", descending: true)
             .getDocuments();
       } else {
-        resp = await _firestore.collection('products').getDocuments();
+        if (!hasMore && !refresh) {
+          print('No More Products');
+          return;
+        }
+        print(lastDocument);
+        if (lastDocument == null) {
+          querySnapshot = await _firestore
+              .collection('products')
+              .orderBy("createdOn", descending: true)
+              .limit(10)
+              .getDocuments();
+        } else {
+          querySnapshot = await _firestore
+              .collection('products')
+              .orderBy("createdOn", descending: true)
+              .startAfterDocument(lastDocument)
+              .limit(10)
+              .getDocuments();
+        }
+        if (querySnapshot.documents.length < 10) {
+          hasMore = false;
+          hasMoreCallback(hasMore);
+        }
+        if (querySnapshot.documents.length == 10) {
+          hasMore = true;
+          hasMoreCallback(hasMore);
+        }
+        lastDocumentCallback(
+            querySnapshot.documents[querySnapshot.documents.length - 1]);
       }
 
       var loadedProds = <Product>[];
 
-      resp.documents.forEach((item) {
+      querySnapshot.documents.forEach((item) {
         loadedProds.add(Product(
           id: item.documentID,
           condition: item.data['condition'] == "Usado"
@@ -102,8 +144,12 @@ class Products with ChangeNotifier {
         ));
       });
 
-      _items = loadedProds;
-      print('feteched');
+      if (refresh) {
+        _items = loadedProds;
+      } else {
+        _items.addAll(loadedProds);
+      }
+
       notifyListeners();
     } catch (e) {
       throw e;
@@ -159,5 +205,71 @@ class Products with ChangeNotifier {
       throw e;
     }
     existingProd = null;
+  }
+
+  Future<void> fetchFavorites() async {
+    // Firestore data structure are: Collection - document - Collection - document - Collection - document
+    //E g: db.collection("app").document("users").collection(uid).document("notifications")
+    try {
+      QuerySnapshot resp = await _firestore
+          .collection('userSettings')
+          .document('$_userId')
+          .collection('favorites')
+          .where("isFavorite", isEqualTo: true)
+          .getDocuments();
+
+      var favoriteProds = <Product>[];
+
+      resp.documents.forEach((item) {
+        favoriteProds
+            .add(_items.firstWhere((pro) => pro.id == item.documentID));
+      });
+      _favItems = favoriteProds;
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<void> addFavorite(String prodId) async {
+    try {
+      await _firestore
+          .collection('userSettings')
+          .document('$_userId')
+          .collection('favorites')
+          .document(prodId)
+          .setData({"isFavorite": true});
+
+      _favItems.insert(0, _items.firstWhere((pro) => pro.id == prodId));
+
+      print("added to favorites");
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<void> deleteFavorite(String prodId) async {
+    final int favIndex =
+        _favItems.indexWhere((element) => element.id == prodId);
+    var existingFav = _favItems[favIndex];
+    _favItems.removeAt(favIndex);
+    notifyListeners();
+    try {
+      await _firestore
+          .collection('userSettings')
+          .document('$_userId')
+          .collection('favorites')
+          .document(prodId)
+          .delete();
+      print('deletado');
+    } catch (e) {
+      _favItems.insert(favIndex, existingFav);
+      notifyListeners();
+      print(e);
+      throw e;
+    }
   }
 }

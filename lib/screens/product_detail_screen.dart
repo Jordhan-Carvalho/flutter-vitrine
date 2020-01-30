@@ -4,9 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
 
-import '../models/products.dart';
+import '../models/product.dart';
 import '../widgets/card_container.dart';
 import '../widgets/theme_button.dart';
+import '../widgets/favorite_button.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   const ProductDetailScreen({Key key}) : super(key: key);
@@ -30,14 +31,6 @@ class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final prod = ModalRoute.of(context).settings.arguments as Product;
-    // final prodId = ModalRoute.of(context).settings.arguments as String;
-    // before adding findById method
-    // final prod = Provider.of<Products>(context)
-    //     .items
-    //     .firstWhere((prod) => prod.id == prodId);
-
-// listen to false, so it wont rebuild when products update
-    // final prod = Provider.of<Products>(context, listen: false).findById(prodId);
 
     return Scaffold(
       body: CustomScrollView(
@@ -177,14 +170,8 @@ class ProductDetailScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  ThemeButton(
-                    content: Row(
-                      children: <Widget>[
-                        Text('Favoritos'),
-                        Icon(Icons.star_border),
-                      ],
-                    ),
-                    handlePress: () {},
+                  FavoriteButton(
+                    prodId: prod.id,
                   ),
                   ThemeButton(
                     content: Row(
@@ -194,7 +181,8 @@ class ProductDetailScreen extends StatelessWidget {
                       ],
                     ),
                     handlePress: () {
-                      FlutterOpenWhatsapp.sendSingleMessage("5577991116269",
+                      FlutterOpenWhatsapp.sendSingleMessage(
+                          "55${prod.telNumber}",
                           "Olá, ${prod.title} ainda está disponível?");
                     },
                   ),

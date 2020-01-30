@@ -7,7 +7,7 @@ enum City { Barreiras, LEM }
 // Dart doesnt support enum to store numbers or strings  https://github.com/dart-lang/language/issues/158
 // enum Category { Imóveis, }
 
-class Product {
+class Product with ChangeNotifier {
   final String id;
   String title;
   int price;
@@ -20,6 +20,7 @@ class Product {
   List<String> imageUrl;
   int telNumber;
   final City city;
+  bool isFavorite;
 
   Product({
     @required this.id,

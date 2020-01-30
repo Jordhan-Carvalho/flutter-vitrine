@@ -7,7 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 // import '../providers/product.dart';
 import '../widgets/custom_stepper_buttons.dart';
 import '../providers/products.dart';
-import '../models/products.dart';
+import '../models/product.dart';
 import '../widgets/image_capture.dart';
 import '../providers/auth.dart';
 

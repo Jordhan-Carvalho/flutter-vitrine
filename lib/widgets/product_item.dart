@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 // import 'package:provider/provider.dart';
 
 // import '../providers/product.dart';
-import '../models/products.dart';
+import '../models/product.dart';
 import '../screens/product_detail_screen.dart';
 // import '../providers/auth.dart';
 
