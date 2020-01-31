@@ -3,6 +3,7 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../models/product.dart';
 import '../widgets/card_container.dart';
@@ -134,7 +135,7 @@ class ProductDetailScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    prod.ownerName,
+                    prod.ownerName ?? "falha",
                     style: TextStyle(
                       color: Theme.of(context).primaryColorDark,
                       fontStyle: FontStyle.italic,
@@ -196,8 +197,8 @@ class ProductDetailScreen extends StatelessWidget {
                   ThemeButton(
                     content: Row(
                       children: <Widget>[
-                        Icon(Icons.perm_phone_msg),
                         Text('Mensagem'),
+                        Icon(MdiIcons.whatsapp),
                       ],
                     ),
                     handlePress: () {

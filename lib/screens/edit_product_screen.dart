@@ -273,6 +273,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 children: <Widget>[
                                   TextFormField(
                                     initialValue: _editedProd.title,
+                                    maxLength: 28,
                                     decoration:
                                         InputDecoration(labelText: 'Título'),
                                     textInputAction: TextInputAction.next,
@@ -283,6 +284,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                     validator: (value) {
                                       if (value.isEmpty) {
                                         return "Por favor preencha o campo";
+                                      }
+                                      if (value.length >= 29) {
+                                        return "Diminuir titulo";
                                       }
                                       return null;
                                     },
@@ -377,6 +381,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                           child: TextFormField(
                                             initialValue: _editedProd.telNumber
                                                 .toString(),
+                                            maxLength: 11,
                                             decoration: InputDecoration(
                                                 labelText: 'Número WhatsApp',
                                                 helperText:
