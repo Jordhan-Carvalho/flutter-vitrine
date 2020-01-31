@@ -39,7 +39,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     delivery: false,
     tradable: false,
   );
-  bool _autoValidate = false;
+
   List<File> _filesArray = [];
   var _isInit = true;
   var _isLoading = false;
@@ -72,7 +72,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
           duration: Duration(milliseconds: 2000),
         ));
       return false;
-    } else if (_filesArray.isEmpty && _currentStep == 1) {
+    } else if (_filesArray.isEmpty &&
+        _currentStep == 1 &&
+        _editedProd.imageUrl.isEmpty) {
       Scaffold.of(ctx)
         ..removeCurrentSnackBar()
         ..showSnackBar(SnackBar(
@@ -193,7 +195,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
           ? _goTo(_currentStep + 1)
           : setState(() => complete = true);
     } else {
-      setState(() => _autoValidate = true);
       _validateInputs(ctx);
     }
   }
@@ -201,13 +202,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
   void _cancel() {
     if (_currentStep > 0) {
       _goTo(_currentStep - 1);
+      return;
+    }
+    if (_currentStep == 0) {
+      Navigator.of(context).pop();
     }
   }
 
   void _goTo(int step) {
     setState(() => _currentStep = step);
   }
-
   //STEPPER
 
   @override
@@ -229,7 +233,24 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       child: Stepper(
                         type: StepperType.horizontal,
                         currentStep: _currentStep,
-                        onStepTapped: (step) => _goTo(step),
+                        onStepTapped: (step) {
+                          if (_currentStep == 1) {
+                            _formKeys[_currentStep].currentState.save();
+                            _currentStep = step;
+                            _goTo(step);
+                            return;
+                          }
+                          if (_formKeys[_currentStep].currentState.validate() &&
+                              _validateInputs(context)) {
+                            _formKeys[_currentStep].currentState.save();
+                            _currentStep = step;
+                            // _currentStep + 1 != steps.length
+                            _goTo(step);
+                          } else {
+                            _validateInputs(context);
+                            return;
+                          }
+                        },
                         controlsBuilder: (BuildContext context,
                                 {VoidCallback onStepContinue,
                                 VoidCallback onStepCancel}) =>
@@ -247,7 +268,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             state: StepState.complete,
                             content: Form(
                               key: _formKeys[0],
-                              autovalidate: _autoValidate,
+                              autovalidate: true,
                               child: Column(
                                 children: <Widget>[
                                   TextFormField(
@@ -273,10 +294,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                     children: <Widget>[
                                       Expanded(
                                         child: TextFormField(
-                                          initialValue:
-                                              _editedProd.price.toString(),
+                                          initialValue: _editedProd.price == 0
+                                              ? ''
+                                              : _editedProd.price.toString(),
                                           decoration: InputDecoration(
-                                              labelText: 'Preço'),
+                                              labelText: 'Preço',
+                                              helperText: "Formato 1500"),
                                           textInputAction: TextInputAction.next,
                                           keyboardType: TextInputType.number,
                                           focusNode: _priceFocusNode,
@@ -288,7 +311,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                               return "Por favor preencha o campo";
                                             }
                                             if (int.tryParse(value) == null) {
-                                              return 'Coloque um valor valido';
+                                              return 'Somente valor inteiro';
                                             }
                                             if (int.parse(value) <= 0) {
                                               return 'Valor precisa ser maior que 0';
@@ -368,7 +391,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                               if (value.isEmpty) {
                                                 return "Por favor preencha o campo";
                                               }
-                                              if (int.tryParse(value) == null) {
+                                              if (int.tryParse(value) == null ||
+                                                  int.parse(value) >
+                                                      99900000000) {
                                                 return 'Coloque um valor valido';
                                               }
                                               if (int.parse(value) <=
@@ -494,9 +519,21 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       children: <Widget>[
                                         ImageCapture(
                                           addFile: _addFileToArray,
+                                          existingImage: _filesArray.length >= 1
+                                              ? _filesArray[0]
+                                              : null,
+                                          existingIndex: _filesArray.length >= 1
+                                              ? 0
+                                              : null,
                                         ),
                                         ImageCapture(
                                           addFile: _addFileToArray,
+                                          existingImage: _filesArray.length >= 2
+                                              ? _filesArray[1]
+                                              : null,
+                                          existingIndex: _filesArray.length >= 2
+                                              ? 1
+                                              : null,
                                         ),
                                       ],
                                     ),
@@ -510,9 +547,21 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       children: <Widget>[
                                         ImageCapture(
                                           addFile: _addFileToArray,
+                                          existingImage: _filesArray.length >= 3
+                                              ? _filesArray[2]
+                                              : null,
+                                          existingIndex: _filesArray.length >= 3
+                                              ? 2
+                                              : null,
                                         ),
                                         ImageCapture(
                                           addFile: _addFileToArray,
+                                          existingImage: _filesArray.length >= 4
+                                              ? _filesArray[3]
+                                              : null,
+                                          existingIndex: _filesArray.length >= 4
+                                              ? 3
+                                              : null,
                                         ),
                                       ],
                                     ),

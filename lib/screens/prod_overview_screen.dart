@@ -90,8 +90,7 @@ class _ProdOverviewState extends State<ProdOverview>
             onRefresh: () => _fetchProducts(refresh: true),
             child: Consumer<Products>(
               builder: (ctx, productData, child) => Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: (cat && productData.categoryItems.length == 0)
                     ? Center(
                         child: Text('Sem produtos nessa categoria'),

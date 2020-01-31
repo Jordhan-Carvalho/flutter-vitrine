@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
 import '../models/product.dart';
@@ -31,7 +30,7 @@ class ProductItem extends StatelessWidget {
         ),
         footer: GridTileBar(
           leading: Text(
-            '${describeEnum(product.condition)}',
+            'R\$ ${NumberFormat("###,###", "pt_BR").format(product.price).toString()}',
             style: TextStyle(color: Colors.white),
           ),
           trailing: Row(
@@ -51,10 +50,9 @@ class ProductItem extends StatelessWidget {
           backgroundColor: Color.fromRGBO(0, 0, 0, 0.5),
           title: Text(
             product.title,
+            style: TextStyle(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
-          subtitle: Text(
-              'R\$ ${NumberFormat("###,###", "pt_BR").format(product.price).toString()}'),
         ),
       ),
     );

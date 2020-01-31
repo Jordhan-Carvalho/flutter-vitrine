@@ -6,7 +6,11 @@ import 'package:image_cropper/image_cropper.dart';
 
 class ImageCapture extends StatefulWidget {
   final Function addFile;
-  ImageCapture({Key key, @required this.addFile}) : super(key: key);
+  final File existingImage;
+  final int existingIndex;
+  ImageCapture(
+      {Key key, @required this.addFile, this.existingImage, this.existingIndex})
+      : super(key: key);
 
   @override
   _ImageCaptureState createState() => _ImageCaptureState();
@@ -15,6 +19,16 @@ class ImageCapture extends StatefulWidget {
 class _ImageCaptureState extends State<ImageCapture> {
   File _imageFile;
   int _fileIndex;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existingImage != null && widget.existingIndex != null) {
+      setState(() {
+        _imageFile = widget.existingImage;
+        _fileIndex = widget.existingIndex;
+      });
+    }
+  }
 
   Future<void> _pickImage(ImageSource imgSrc) async {
     var image = await ImagePicker.pickImage(
