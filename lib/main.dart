@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
-import './screens/categorie_overview_screen.dart';
+import './screens/prod_overview_screen.dart';
 import './widgets/comming_soon.dart';
 import './screens/auth_screen.dart';
 import './widgets/splash_screen.dart';
@@ -65,7 +65,17 @@ class MyApp extends StatelessWidget {
             ProductDetailScreen.routeName: (_) => ProductDetailScreen(),
             EditProductScreen.routeName: (_) => EditProductScreen(),
             LoginScreen.routeName: (_) => LoginScreen(),
-            CategorieOverviewScreen.routeName: (_) => CategorieOverviewScreen(),
+          },
+          // Used to pass args on statefull widgets (initState widget.arg)
+          onGenerateRoute: (RouteSettings settings) {
+            print('build route for ${settings.name}');
+            var routes = <String, WidgetBuilder>{
+              ProdOverview.routeName: (ctx) => ProdOverview(
+                    category: settings.arguments,
+                  ),
+            };
+            WidgetBuilder builder = routes[settings.name];
+            return MaterialPageRoute(builder: (ctx) => builder(ctx));
           },
           onUnknownRoute: (RouteSettings rs) =>
               new MaterialPageRoute(builder: (context) => ComingSoon()),

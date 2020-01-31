@@ -305,19 +305,52 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> fetchCategory(String category) async {
+  Future<void> fetchCategory(
+    String category, {
+    bool filterByUser = false,
+    bool hasMore,
+    Function hasMoreCallback,
+    DocumentSnapshot lastDocument,
+    Function lastDocumentCallback,
+    bool refresh = false,
+  }) async {
+    QuerySnapshot querySnapshot;
     try {
-      QuerySnapshot resp = await _firestore
-          .collection('products')
-          .where('category', isEqualTo: category)
-          .getDocuments();
+      if (lastDocument == null) {
+        querySnapshot = await _firestore
+            .collection('products')
+            .where('category', isEqualTo: category)
+            .orderBy("createdOn", descending: true)
+            .limit(10)
+            .getDocuments();
+      } else {
+        querySnapshot = await _firestore
+            .collection('products')
+            .where('category', isEqualTo: category)
+            .orderBy("createdOn", descending: true)
+            .startAfterDocument(lastDocument)
+            .limit(10)
+            .getDocuments();
+      }
+      print('querysnapshot ${querySnapshot.documents.length}');
+      if (querySnapshot.documents.length < 10) {
+        hasMore = false;
+        hasMoreCallback(hasMore);
+      }
+      if (querySnapshot.documents.length == 10) {
+        hasMore = true;
+        hasMoreCallback(hasMore);
+      }
+      if (querySnapshot.documents.length != 0) {
+        lastDocumentCallback(
+            querySnapshot.documents[querySnapshot.documents.length - 1]);
+      }
 
-      print(resp.documents.length);
-      print(category);
+      print(querySnapshot.documents.length);
 
       var categoryProds = <Product>[];
 
-      resp.documents.forEach((item) {
+      querySnapshot.documents.forEach((item) {
         categoryProds.add(Product(
           id: item.documentID,
           condition: item.data['condition'] == "Usado"
@@ -336,7 +369,12 @@ class Products with ChangeNotifier {
         ));
       });
 
-      _categoryItems = categoryProds;
+      if (refresh) {
+        _categoryItems = categoryProds;
+      } else {
+        _categoryItems.addAll(categoryProds);
+      }
+
       notifyListeners();
     } catch (e) {
       print(e);

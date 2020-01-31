@@ -5,7 +5,7 @@ import './market_screen.dart';
 import './edit_product_screen.dart';
 import './favorites_screen.dart';
 import './categories_screen.dart';
-import './home_screen.dart';
+import './prod_overview_screen.dart';
 import '../widgets/main_drawer.dart';
 
 class NavTabs extends StatefulWidget {
@@ -22,7 +22,7 @@ class _NavTabsState extends State<NavTabs> {
   @override
   void initState() {
     _pages = [
-      {'page': HomeScreen(), 'title': 'Vitrine'},
+      {'page': ProdOverview(), 'title': 'Vitrine'},
       {'page': CategoriesScreen(), 'title': 'Categorias'},
       {'page': MarketScreen(), 'title': 'Lojas'},
       {'page': ServicesScreen(), 'title': 'Serviços'},

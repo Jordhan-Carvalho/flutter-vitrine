@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../screens/categorie_overview_screen.dart';
+import '../screens/prod_overview_screen.dart';
 
 class CategoryItem extends StatelessWidget {
   final String category;
@@ -12,7 +12,7 @@ class CategoryItem extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.of(context)
-            .pushNamed(CategorieOverviewScreen.routeName, arguments: category);
+            .pushNamed(ProdOverview.routeName, arguments: category);
       },
       child: Card(
         margin: const EdgeInsets.all(2),
@@ -29,7 +29,7 @@ class CategoryItem extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(15)),
                   child: Image.asset(
                     imgPath,
-                    height: 170,
+                    height: 195,
                     width: double.infinity,
                     fit: BoxFit.cover,
                   ),
@@ -39,7 +39,7 @@ class CategoryItem extends StatelessWidget {
                   bottom: 20,
                   // right: 10,
                   child: Container(
-                    width: 170,
+                    width: 150,
                     padding:
                         const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     color: Color.fromRGBO(0, 0, 0, 0.5),

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
-// import 'package:provider/provider.dart';
 
-// import '../providers/product.dart';
 import '../models/product.dart';
 import '../screens/product_detail_screen.dart';
-// import '../providers/auth.dart';
 
 class ProductItem extends StatelessWidget {
   final Product product;
@@ -15,9 +12,6 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final product = Provider.of<Product>(context);
-    // final authData = Provider.of<Auth>(context, listen: false);
-
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
