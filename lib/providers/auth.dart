@@ -14,6 +14,7 @@ class Auth with ChangeNotifier {
   DateTime _expiryDate;
   String _userId;
   Timer _authTimer;
+  String _userName;
 
   // String get token
   bool isAuthenti;
@@ -29,6 +30,10 @@ class Auth with ChangeNotifier {
       return _token;
     }
     return null;
+  }
+
+  String get userName {
+    return _userName;
   }
 
   String get userId {
@@ -58,8 +63,8 @@ class Auth with ChangeNotifier {
       assert(user.uid == currentUser.uid);
 
       final userData = await user.getIdToken(refresh: true);
-      print(userData);
 
+      _userName = user.displayName;
       _token = userData.token;
       _userId = currentUser.uid;
       _expiryDate = userData.expirationTime;

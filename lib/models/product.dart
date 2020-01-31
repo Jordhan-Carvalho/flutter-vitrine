@@ -30,6 +30,7 @@ class Product {
   int telNumber;
   final City city;
   bool isFavorite;
+  final String ownerName;
 
   Product({
     @required this.id,
@@ -44,6 +45,7 @@ class Product {
     @required this.category,
     this.city,
     @required this.telNumber,
+    this.ownerName,
   });
 
   static List<String> get loadCategories {

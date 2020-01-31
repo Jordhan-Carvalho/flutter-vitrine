@@ -124,17 +124,37 @@ class ProductDetailScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0),
-                child: Text(
-                  prod.category,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColorDark,
-                    fontStyle: FontStyle.italic,
-                    fontSize: 15,
+              Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: Text(
+                      'Vendido por:',
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
                   ),
-                  textAlign: TextAlign.start,
-                ),
+                  Text(
+                    prod.ownerName,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColorDark,
+                      fontStyle: FontStyle.italic,
+                      fontSize: 15,
+                    ),
+                    textAlign: TextAlign.end,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 45.0),
+                    child: Text(
+                      prod.category,
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColorDark,
+                        fontStyle: FontStyle.italic,
+                        fontSize: 15,
+                      ),
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                ],
               ),
               CardContainer(
                 height: 160,
@@ -183,7 +203,7 @@ class ProductDetailScreen extends StatelessWidget {
                     handlePress: () {
                       FlutterOpenWhatsapp.sendSingleMessage(
                           "55${prod.telNumber}",
-                          "Olá, ${prod.title} ainda está disponível?");
+                          "Olá, vi que você está vendendo ${prod.title} no Vitrine... ainda está disponível?");
                     },
                   ),
                 ],

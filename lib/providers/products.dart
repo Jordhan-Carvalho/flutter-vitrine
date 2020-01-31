@@ -14,6 +14,11 @@ class Products with ChangeNotifier {
 
   String _authToken;
   String _userId;
+  String _userName;
+
+  set userName(String value) {
+    _userName = value;
+  }
 
   set authToken(String value) {
     _authToken = value;
@@ -55,6 +60,7 @@ class Products with ChangeNotifier {
         "tradable": prod.tradable,
         "imageUrl": prod.imageUrl,
         "ownerId": _userId,
+        "ownerName": _userName,
       });
 
       _items.insert(
@@ -72,6 +78,7 @@ class Products with ChangeNotifier {
             telNumber: prod.telNumber,
             tradable: prod.tradable,
             imageUrl: prod.imageUrl,
+            ownerName: _userName,
           ));
       notifyListeners();
     } catch (e) {
@@ -88,7 +95,6 @@ class Products with ChangeNotifier {
     bool refresh = false,
   }) async {
     QuerySnapshot querySnapshot;
-
     try {
       if (filterByUser) {
         querySnapshot = await _firestore
@@ -146,6 +152,7 @@ class Products with ChangeNotifier {
           city: item.data['city'] == "Barreiras" ? City.Barreiras : City.LEM,
           createdOn: DateTime.parse(item.data['createdOn']),
           imageUrl: item.data['imageUrl'].cast<String>(),
+          ownerName: item.data['ownerName'],
         ));
       });
 
@@ -241,6 +248,7 @@ class Products with ChangeNotifier {
           city: item.data['city'] == "Barreiras" ? City.Barreiras : City.LEM,
           createdOn: DateTime.parse(item.data['createdOn']),
           imageUrl: item.data['imageUrl'].cast<String>(),
+          ownerName: item.data['ownerName'],
         ));
       });
       print(favoriteProds.length);
@@ -271,6 +279,7 @@ class Products with ChangeNotifier {
         "imageUrl": prod.imageUrl,
         "createdOn": prod.createdOn.toIso8601String(),
         "city": prod.city == City.Barreiras ? "Barreiras" : "LEM",
+        "ownerName": prod.ownerName,
       });
 
       _favItems.insert(0, prod);
@@ -366,6 +375,7 @@ class Products with ChangeNotifier {
           city: item.data['city'] == "Barreiras" ? City.Barreiras : City.LEM,
           createdOn: DateTime.parse(item.data['createdOn']),
           imageUrl: item.data['imageUrl'].cast<String>(),
+          ownerName: item.data['ownerName'],
         ));
       });
 

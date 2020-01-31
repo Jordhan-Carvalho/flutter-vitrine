@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
             create: (_) => Products(),
             update: (ctx, authData, prevProds) {
               prevProds..authToken = authData.token;
+              prevProds..userName = authData.userName;
               prevProds..userId = authData.userId;
               return prevProds;
             }),
