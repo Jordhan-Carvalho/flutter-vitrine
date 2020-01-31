@@ -59,8 +59,23 @@ class UserProductItem extends StatelessWidget {
                 if (!await _deleteConfirmation(context)) {
                   return;
                 }
-                Provider.of<Products>(context, listen: false)
-                    .deleteProduct(prod.id);
+                try {
+                  await Provider.of<Products>(context, listen: false)
+                      .deleteProduct(prod.id);
+                  Scaffold.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(SnackBar(
+                      content: Text('Deletado com sucesso'),
+                      duration: Duration(milliseconds: 2000),
+                    ));
+                } catch (e) {
+                  Scaffold.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(SnackBar(
+                      content: Text('Falha em deletar'),
+                      duration: Duration(milliseconds: 2000),
+                    ));
+                }
               },
               color: Theme.of(context).errorColor,
             ),

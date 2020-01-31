@@ -10,8 +10,14 @@ class UserProductsScreen extends StatelessWidget {
   static final routeName = '/user-products-screen';
 
   Future<void> _fetchUserProds(BuildContext context) async {
-    await Provider.of<Products>(context, listen: false)
-        .fetchProducts(filterByUser: true);
+    print('hi');
+    try {
+      await Provider.of<Products>(context, listen: false)
+          .fetchProducts(filterByUser: true);
+    } catch (e) {
+      print(e);
+    }
+    print('ho');
   }
 
   @override
@@ -32,11 +38,11 @@ class UserProductsScreen extends StatelessWidget {
                       padding: EdgeInsets.all(8),
                       child: Consumer<Products>(
                         builder: (ctx, productsData, child) => ListView.builder(
-                          itemCount: productsData.items.length,
+                          itemCount: productsData.userItems.length,
                           itemBuilder: (_, i) => Column(
                             children: [
                               UserProductItem(
-                                productsData.items[i],
+                                productsData.userItems[i],
                               ),
                               Divider(),
                             ],

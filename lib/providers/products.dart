@@ -11,6 +11,7 @@ class Products with ChangeNotifier {
   List<Product> _items = [];
   List<Product> _favItems = [];
   List<Product> _categoryItems = [];
+  List<Product> _userItems = [];
 
   String _authToken;
   String _userId;
@@ -38,6 +39,10 @@ class Products with ChangeNotifier {
 
   List<Product> get categoryItems {
     return [..._categoryItems];
+  }
+
+  List<Product> get userItems {
+    return [..._userItems];
   }
 
   Product findById(String id) {
@@ -156,14 +161,19 @@ class Products with ChangeNotifier {
         ));
       });
 
-      if (refresh) {
-        _items = loadedProds;
+      if (filterByUser) {
+        _userItems = loadedProds;
       } else {
-        _items.addAll(loadedProds);
+        if (refresh) {
+          _items = loadedProds;
+        } else {
+          _items.addAll(loadedProds);
+        }
       }
 
       notifyListeners();
     } catch (e) {
+      print(e);
       throw e;
     }
   }
