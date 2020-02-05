@@ -69,7 +69,7 @@ class Auth with ChangeNotifier {
       _userId = currentUser.uid;
       _expiryDate = userData.expirationTime;
 
-      _autoLogout();
+      // _autoLogout();
       notifyListeners();
 
       //store persistent data on phone
@@ -78,6 +78,7 @@ class Auth with ChangeNotifier {
         'token': _token,
         'userId': _userId,
         'expiryDate': _expiryDate.toIso8601String(),
+        'userName': _userName,
       });
       prefs.setString('userPref', userPref);
     } catch (e) {
@@ -99,9 +100,10 @@ class Auth with ChangeNotifier {
       if (expiryDate.isAfter(DateTime.now())) {
         _token = extractedUserData['token'];
         _userId = extractedUserData['userId'];
+        _userName = extractedUserData['userName'];
         _expiryDate = expiryDate;
         notifyListeners();
-        _autoLogout();
+        // _autoLogout();
       }
     }
   }
@@ -121,12 +123,12 @@ class Auth with ChangeNotifier {
     prefs.clear();
   }
 
-  void _autoLogout() {
-    if (_authTimer != null) {
-      // canceling existing timers if available
-      _authTimer.cancel();
-    }
-    final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
-    _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
-  }
+  // void _autoLogout() {
+  //   if (_authTimer != null) {
+  //     // canceling existing timers if available
+  //     _authTimer.cancel();
+  //   }
+  //   final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
+  //   _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
+  // }
 }
