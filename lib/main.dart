@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 import './screens/prod_overview_screen.dart';
 import './widgets/comming_soon.dart';
@@ -13,7 +14,14 @@ import './screens/user_products_screen.dart';
 import './screens/nav_tab.dart';
 import './providers/auth.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override

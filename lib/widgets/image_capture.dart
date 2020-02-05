@@ -35,7 +35,7 @@ class _ImageCaptureState extends State<ImageCapture> {
       source: imgSrc,
       maxHeight: 512,
       maxWidth: 512,
-      imageQuality: 90,
+      imageQuality: 97,
     );
 
     if (image == null) {

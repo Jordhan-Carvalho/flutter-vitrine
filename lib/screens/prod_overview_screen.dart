@@ -98,23 +98,27 @@ class _ProdOverviewState extends State<ProdOverview>
                     : CustomScrollView(
                         controller: _scrollController,
                         slivers: <Widget>[
-                          SliverGrid(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                return ProductItem(cat
-                                    ? productData.categoryItems[index]
-                                    : productData.items[index]);
-                              },
-                              childCount: cat
-                                  ? productData.categoryItems.length
-                                  : productData.items.length,
-                            ),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 1.4,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
+                          SliverPadding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 5),
+                            sliver: SliverGrid(
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                                  return ProductItem(cat
+                                      ? productData.categoryItems[index]
+                                      : productData.items[index]);
+                                },
+                                childCount: cat
+                                    ? productData.categoryItems.length
+                                    : productData.items.length,
+                              ),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 1.4,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                              ),
                             ),
                           ),
                           SliverToBoxAdapter(

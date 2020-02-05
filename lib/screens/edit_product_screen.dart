@@ -489,6 +489,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
                               child: Column(
                                 children: <Widget>[
                                   CheckboxListTile(
+                                    secondary: Icon(
+                                      Icons.autorenew,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
                                     title: const Text(
                                       'Aceita Troca?',
                                       style: TextStyle(fontSize: 15),
@@ -502,6 +506,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                     },
                                   ),
                                   CheckboxListTile(
+                                    secondary: Icon(
+                                      Icons.local_shipping,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
                                     title: const Text(
                                       'Entrega na Residência?',
                                       style: TextStyle(fontSize: 15),

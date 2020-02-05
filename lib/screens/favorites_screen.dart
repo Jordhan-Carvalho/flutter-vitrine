@@ -18,7 +18,6 @@ class _FavoritesScreenState extends State<FavoritesScreen>
 
   @override
   void initState() {
-    print('init');
     _fetchProducts();
     super.initState();
   }
@@ -33,19 +32,23 @@ class _FavoritesScreenState extends State<FavoritesScreen>
     return _isLoading
         ? Center(child: CircularProgressIndicator())
         : Consumer<Products>(
-            builder: (ctx, productData, child) => GridView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 2),
-              itemCount: productData.favoriteItems.length,
-              // use Changenotifier.value on grid and list
-              itemBuilder: (ctx, index) =>
-                  ProductItem(productData.favoriteItems[index]),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-            ),
+            builder: (ctx, productData, child) =>
+                productData.favoriteItems.length == 0
+                    ? Center(child: Text("Sem Favoritos"))
+                    : GridView.builder(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 2),
+                        itemCount: productData.favoriteItems.length,
+                        // use Changenotifier.value on grid and list
+                        itemBuilder: (ctx, index) =>
+                            ProductItem(productData.favoriteItems[index]),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 1,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
+                      ),
           );
   }
 }
