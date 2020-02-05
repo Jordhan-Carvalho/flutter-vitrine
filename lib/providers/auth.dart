@@ -19,8 +19,12 @@ class Auth with ChangeNotifier {
   // String get token
   bool isAuthenti;
 
+// right one
+  // bool get isAuth {
+  //   return token != null;
+  // }
   bool get isAuth {
-    return token != null;
+    return _userId != null;
   }
 
   String get token {
@@ -97,14 +101,19 @@ class Auth with ChangeNotifier {
           json.decode(prefs.getString('userPref')) as Map<String, Object>;
       expiryDate = DateTime.parse(extractedUserData['expiryDate']);
 
-      if (expiryDate.isAfter(DateTime.now())) {
-        _token = extractedUserData['token'];
-        _userId = extractedUserData['userId'];
-        _userName = extractedUserData['userName'];
-        _expiryDate = expiryDate;
-        notifyListeners();
-        // _autoLogout();
-      }
+      _token = extractedUserData['token'];
+      _userId = extractedUserData['userId'];
+      _userName = extractedUserData['userName'];
+      _expiryDate = expiryDate;
+      notifyListeners();
+      // if (expiryDate.isAfter(DateTime.now())) {
+      //   _token = extractedUserData['token'];
+      //   _userId = extractedUserData['userId'];
+      //   _userName = extractedUserData['userName'];
+      //   _expiryDate = expiryDate;
+      //   notifyListeners();
+      // _autoLogout();
+      // }
     }
   }
 
