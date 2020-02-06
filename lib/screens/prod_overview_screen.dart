@@ -7,7 +7,13 @@ import '../widgets/product_item.dart';
 
 class ProdOverview extends StatefulWidget {
   final String category;
-  const ProdOverview({Key key, this.category}) : super(key: key);
+  final String searchTerm;
+
+  const ProdOverview({
+    Key key,
+    this.category,
+    this.searchTerm,
+  }) : super(key: key);
   static final routeName = '/prod-overview';
 
   @override
@@ -18,9 +24,11 @@ class _ProdOverviewState extends State<ProdOverview>
     with AutomaticKeepAliveClientMixin<ProdOverview> {
   ScrollController _scrollController = ScrollController();
   bool _hasMore = true;
+  bool _hasMoreSearch = true;
   bool _isLoading = false;
 
   DocumentSnapshot _lastDocument;
+  DocumentSnapshot _lastSearchDocument;
 
   @override
   bool get wantKeepAlive => true;
@@ -29,6 +37,7 @@ class _ProdOverviewState extends State<ProdOverview>
   void initState() {
     super.initState();
     print('cat ${widget.category}');
+    print('rebuild ${widget.searchTerm}');
 
     _fetchProducts(refresh: true);
 
@@ -56,8 +65,17 @@ class _ProdOverviewState extends State<ProdOverview>
     _lastDocument = newValue;
   }
 
+  _lastSearchDocCallback(DocumentSnapshot newValue) {
+    _lastSearchDocument = newValue;
+  }
+
   _hasMoreCallback(bool newValue) {
     _hasMore = newValue;
+  }
+
+  //Fixing the no more products after fetching search and coming back
+  _hasMoreSearchCallback(bool newValue) {
+    _hasMoreSearch = newValue;
   }
 
   Future<void> _fetchProducts({refresh = false}) async {
@@ -70,6 +88,14 @@ class _ProdOverviewState extends State<ProdOverview>
         lastDocumentCallback: _lastDocCallback,
         lastDocument: refresh ? null : _lastDocument,
       );
+    } else if (widget.searchTerm != null && widget.searchTerm != "") {
+      Provider.of<Products>(context, listen: false).fetchSearch(
+          widget.searchTerm,
+          refresh: refresh,
+          hasMore: _hasMoreSearch,
+          hasMoreCallback: _hasMoreSearchCallback,
+          lastDocumentCallback: _lastSearchDocCallback,
+          lastDocument: refresh ? null : _lastSearchDocument);
     } else {
       await Provider.of<Products>(context, listen: false).fetchProducts(
         refresh: refresh,
@@ -79,6 +105,56 @@ class _ProdOverviewState extends State<ProdOverview>
         lastDocument: refresh ? null : _lastDocument,
       );
     }
+  }
+
+  Widget _buildSearch() {
+    return _isLoading
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : Consumer<Products>(
+            builder: (ctx, productData, child) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: productData.searchedItems.length == 0
+                  ? Center(
+                      child: Text('Sem resultados'),
+                    )
+                  : CustomScrollView(
+                      controller: _scrollController,
+                      slivers: <Widget>[
+                        SliverPadding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 5),
+                          sliver: SliverGrid(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                return ProductItem(
+                                    productData.searchedItems[index]);
+                              },
+                              childCount: productData.searchedItems.length,
+                            ),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 1.4,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                            ),
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: productData.searchedItems.length < 10
+                              ? SizedBox()
+                              : Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
+                                ),
+                        ),
+                      ],
+                    ),
+            ),
+          );
   }
 
   Widget _buildBody({bool cat = false}) {
@@ -141,12 +217,19 @@ class _ProdOverviewState extends State<ProdOverview>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    if (widget.searchTerm != null && widget.searchTerm != "") {
+      _fetchProducts(refresh: true);
+      return _buildSearch();
+    }
+
+    print(widget.searchTerm);
     if (widget.category != null) {
       return Scaffold(
-          appBar: AppBar(
-            title: Text(widget.category),
-          ),
-          body: _buildBody(cat: true));
+        appBar: AppBar(
+          title: Text(widget.category),
+        ),
+        body: _buildBody(cat: true),
+      );
     } else {
       return _buildBody();
     }

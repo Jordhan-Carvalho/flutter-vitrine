@@ -16,13 +16,23 @@ class NavTabs extends StatefulWidget {
 }
 
 class _NavTabsState extends State<NavTabs> {
+  //search bar
+  TextEditingController _searchQueryController = TextEditingController();
+  bool _isSearching = false;
+  String searchQuery = "";
+  //search bar
   List<Map<String, Object>> _pages;
   int _selectedPageIndex = 0;
 
   @override
   void initState() {
     _pages = [
-      {'page': ProdOverview(), 'title': 'Vitrine'},
+      {
+        'page': ProdOverview(
+          searchTerm: searchQuery,
+        ),
+        'title': 'Vitrine'
+      },
       {'page': CategoriesScreen(), 'title': 'Categorias'},
       {'page': MarketScreen(), 'title': 'Lojas'},
       {'page': ServicesScreen(), 'title': 'Serviços'},
@@ -37,13 +47,91 @@ class _NavTabsState extends State<NavTabs> {
     });
   }
 
+//Search
+
+  void changeQueryValueCallback(String query) {}
+
+  Widget _buildSearchField() {
+    return TextField(
+      controller: _searchQueryController,
+      autofocus: true,
+      decoration: InputDecoration(
+        hintText: "Procurar produto...",
+        border: InputBorder.none,
+        hintStyle: TextStyle(color: Colors.white30),
+      ),
+      style: TextStyle(color: Colors.white, fontSize: 16.0),
+      onChanged: (query) => updateSearchQuery,
+      onSubmitted: (value) => updateSearchQuery(value),
+    );
+  }
+
+  List<Widget> _buildActions() {
+    if (_isSearching) {
+      return <Widget>[
+        IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () {
+            if (_searchQueryController == null ||
+                _searchQueryController.text.isEmpty) {
+              Navigator.pop(context);
+              return;
+            }
+            _clearSearchQuery();
+          },
+        ),
+      ];
+    }
+
+    return <Widget>[
+      IconButton(
+        icon: const Icon(Icons.search),
+        onPressed: _startSearch,
+      ),
+    ];
+  }
+
+  void _startSearch() {
+    ModalRoute.of(context)
+        .addLocalHistoryEntry(LocalHistoryEntry(onRemove: _stopSearching));
+
+    setState(() {
+      _isSearching = true;
+    });
+  }
+
+  void updateSearchQuery(String newQuery) {
+    setState(() {
+      searchQuery = newQuery;
+    });
+  }
+
+  void _stopSearching() {
+    _clearSearchQuery();
+
+    setState(() {
+      _isSearching = false;
+    });
+  }
+
+  void _clearSearchQuery() {
+    setState(() {
+      _searchQueryController.clear();
+      updateSearchQuery("");
+    });
+  }
+
+//Search
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text(_pages[_selectedPageIndex]['title']),
+        // leading: _isSearching ? const BackButton() : Container(),
+        title: _selectedPageIndex == 0
+            ? (_isSearching ? _buildSearchField() : Text('Vitrine'))
+            : Text(_pages[_selectedPageIndex]['title']),
         actions: <Widget>[
+          if (_selectedPageIndex == 0) ..._buildActions(),
           FlatButton(
             child: Text(
               '\$ Vender',
@@ -58,7 +146,11 @@ class _NavTabsState extends State<NavTabs> {
         ],
       ),
       drawer: MainDrawer(),
-      body: _pages[_selectedPageIndex]['page'],
+      body: _selectedPageIndex == 0
+          ? ProdOverview(
+              searchTerm: searchQuery,
+            )
+          : _pages[_selectedPageIndex]['page'],
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,
         // backgroundColor: Colors.black,

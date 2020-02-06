@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../helpers/gen_search_terms.dart';
 import '../models/product.dart';
 
 class Products with ChangeNotifier {
@@ -12,6 +13,7 @@ class Products with ChangeNotifier {
   List<Product> _favItems = [];
   List<Product> _categoryItems = [];
   List<Product> _userItems = [];
+  List<Product> _searchedItems = [];
 
   String _authToken;
   String _userId;
@@ -45,12 +47,18 @@ class Products with ChangeNotifier {
     return [..._userItems];
   }
 
+  List<Product> get searchedItems {
+    return [..._searchedItems];
+  }
+
   Product findById(String id) {
     return items.firstWhere((prod) => prod.id == id);
   }
 
   Future<void> addProduct(Product prod) async {
     final _timeCreated = DateTime.now();
+    final prodSearchTerms = searchTerms(prod.title);
+
     try {
       DocumentReference resp = await _firestore.collection('products').add({
         "title": prod.title,
@@ -66,25 +74,26 @@ class Products with ChangeNotifier {
         "imageUrl": prod.imageUrl,
         "ownerId": _userId,
         "ownerName": _userName,
+        "searchTerms": prodSearchTerms
       });
 
       _items.insert(
           0,
           Product(
-            id: resp.documentID,
-            title: prod.title,
-            category: prod.category,
-            city: prod.city,
-            condition: prod.condition,
-            createdOn: _timeCreated,
-            delivery: prod.delivery,
-            description: prod.description,
-            price: prod.price,
-            telNumber: prod.telNumber,
-            tradable: prod.tradable,
-            imageUrl: prod.imageUrl,
-            ownerName: _userName,
-          ));
+              id: resp.documentID,
+              title: prod.title,
+              category: prod.category,
+              city: prod.city,
+              condition: prod.condition,
+              createdOn: _timeCreated,
+              delivery: prod.delivery,
+              description: prod.description,
+              price: prod.price,
+              telNumber: prod.telNumber,
+              tradable: prod.tradable,
+              imageUrl: prod.imageUrl,
+              ownerName: _userName,
+              searchTerms: prodSearchTerms));
       notifyListeners();
     } catch (e) {
       print(e);
@@ -180,6 +189,7 @@ class Products with ChangeNotifier {
 
   Future<void> updateProduct(String id, Product newProd) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
+    final prodSearchTerm = searchTerms(newProd.title);
     if (prodIndex >= 0) {
       try {
         await _firestore.collection('products').document(id).updateData({
@@ -191,6 +201,7 @@ class Products with ChangeNotifier {
           "price": newProd.price,
           "telNumber": newProd.telNumber,
           "tradable": newProd.tradable,
+          "searchTerms": prodSearchTerm,
         });
         _items[prodIndex] = newProd;
         notifyListeners();
@@ -394,6 +405,85 @@ class Products with ChangeNotifier {
       } else {
         _categoryItems.addAll(categoryProds);
       }
+
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<void> fetchSearch(
+    String searchedProd, {
+    bool hasMore,
+    Function hasMoreCallback,
+    DocumentSnapshot lastDocument,
+    Function lastDocumentCallback,
+    bool refresh = false,
+  }) async {
+    QuerySnapshot querySnapshot;
+    print(' valor que entro $searchedProd');
+    try {
+      if (lastDocument == null) {
+        querySnapshot = await _firestore
+            .collection('products')
+            .where("searchTerms", arrayContains: searchedProd)
+            .orderBy("createdOn", descending: true)
+            .limit(10)
+            .getDocuments();
+      } else {
+        querySnapshot = await _firestore
+            .collection('products')
+            .where("searchTerms", arrayContains: searchedProd)
+            .orderBy("createdOn", descending: true)
+            .startAfterDocument(lastDocument)
+            .limit(10)
+            .getDocuments();
+      }
+      print('querysnapshot ${querySnapshot.documents.length}');
+      if (querySnapshot.documents.length < 10) {
+        hasMore = false;
+        hasMoreCallback(hasMore);
+      }
+      if (querySnapshot.documents.length == 10) {
+        hasMore = true;
+        hasMoreCallback(hasMore);
+      }
+      if (querySnapshot.documents.length != 0) {
+        lastDocumentCallback(
+            querySnapshot.documents[querySnapshot.documents.length - 1]);
+      }
+
+      print(querySnapshot.documents.length);
+
+      var searchProds = <Product>[];
+
+      querySnapshot.documents.forEach((item) {
+        searchProds.add(Product(
+          id: item.documentID,
+          condition: item.data['condition'] == "Usado"
+              ? Condition.Usado
+              : Condition.Novo,
+          category: item.data['category'],
+          delivery: item.data['delivery'],
+          description: item.data['description'],
+          price: item.data['price'],
+          telNumber: item.data['telNumber'],
+          title: item.data['title'],
+          tradable: item.data['tradable'],
+          city: item.data['city'] == "Barreiras" ? City.Barreiras : City.LEM,
+          createdOn: DateTime.parse(item.data['createdOn']),
+          imageUrl: item.data['imageUrl'].cast<String>(),
+          ownerName: item.data['ownerName'],
+        ));
+      });
+
+      if (refresh) {
+        _searchedItems = searchProds;
+      } else {
+        _searchedItems.addAll(searchProds);
+      }
+      print(searchProds);
 
       notifyListeners();
     } catch (e) {
