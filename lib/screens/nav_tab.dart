@@ -8,6 +8,11 @@ import './categories_screen.dart';
 import './prod_overview_screen.dart';
 import '../widgets/main_drawer.dart';
 
+enum FilterOptions {
+  Delivery,
+  Tradable,
+}
+
 class NavTabs extends StatefulWidget {
   NavTabs({Key key}) : super(key: key);
 
@@ -23,6 +28,8 @@ class _NavTabsState extends State<NavTabs> {
   //search bar
   List<Map<String, Object>> _pages;
   int _selectedPageIndex = 0;
+  var _showTradable = false;
+  var _showDelivery = false;
 
   @override
   void initState() {
@@ -45,6 +52,11 @@ class _NavTabsState extends State<NavTabs> {
     setState(() {
       _selectedPageIndex = index;
     });
+  }
+
+  void _filterCallback(newValue) {
+    _showDelivery = newValue;
+    _showTradable = newValue;
   }
 
 //Search
@@ -127,11 +139,45 @@ class _NavTabsState extends State<NavTabs> {
     return Scaffold(
       appBar: AppBar(
         // leading: _isSearching ? const BackButton() : Container(),
+        centerTitle: _selectedPageIndex == 0 ? false : true,
         title: _selectedPageIndex == 0
             ? (_isSearching ? _buildSearchField() : Text('Vitrine'))
             : Text(_pages[_selectedPageIndex]['title']),
         actions: <Widget>[
           if (_selectedPageIndex == 0) ..._buildActions(),
+          if (_selectedPageIndex == 0)
+            PopupMenuButton(
+              onSelected: (FilterOptions selectedValue) {
+                setState(() {
+                  if (selectedValue == FilterOptions.Delivery) {
+                    _showDelivery = !_showDelivery;
+                  } else if (selectedValue == FilterOptions.Tradable) {
+                    _showTradable = !_showTradable;
+                  }
+                });
+              },
+              icon: Icon(
+                Icons.more_vert,
+              ),
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  child: Text(
+                    'Entrega',
+                    style: TextStyle(
+                        color: _showDelivery ? Colors.green : Colors.black),
+                  ),
+                  value: FilterOptions.Delivery,
+                ),
+                PopupMenuItem(
+                  child: Text(
+                    'Trocavel',
+                    style: TextStyle(
+                        color: _showTradable ? Colors.green : Colors.black),
+                  ),
+                  value: FilterOptions.Tradable,
+                ),
+              ],
+            ),
           FlatButton(
             child: Text(
               '\$ Vender',
@@ -149,6 +195,9 @@ class _NavTabsState extends State<NavTabs> {
       body: _selectedPageIndex == 0
           ? ProdOverview(
               searchTerm: searchQuery,
+              showTradable: _showTradable,
+              showDelivery: _showDelivery,
+              filterCallback: _filterCallback,
             )
           : _pages[_selectedPageIndex]['page'],
       bottomNavigationBar: BottomNavigationBar(

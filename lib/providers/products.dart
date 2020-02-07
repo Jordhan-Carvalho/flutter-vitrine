@@ -35,6 +35,18 @@ class Products with ChangeNotifier {
     return [..._items];
   }
 
+  List<Product> get filterDeliveryItems {
+    return _items.where((prod) => prod.delivery).toList();
+  }
+
+  List<Product> get filterTradableItems {
+    return _items.where((prod) => prod.tradable).toList();
+  }
+
+  List<Product> get filterTradDeliveryItems {
+    return _items.where((prod) => prod.delivery && prod.tradable).toList();
+  }
+
   List<Product> get favoriteItems {
     return [..._favItems];
   }
@@ -49,6 +61,20 @@ class Products with ChangeNotifier {
 
   List<Product> get searchedItems {
     return [..._searchedItems];
+  }
+
+  List<Product> get filterSearchDeliveryItems {
+    return _searchedItems.where((prod) => prod.delivery).toList();
+  }
+
+  List<Product> get filterSearchTradableItems {
+    return _searchedItems.where((prod) => prod.tradable).toList();
+  }
+
+  List<Product> get filterSearchTradDeliveryItems {
+    return _searchedItems
+        .where((prod) => prod.delivery && prod.tradable)
+        .toList();
   }
 
   Product findById(String id) {
@@ -346,6 +372,10 @@ class Products with ChangeNotifier {
   }) async {
     QuerySnapshot querySnapshot;
     try {
+      if (!hasMore && !refresh) {
+        print('No More Products');
+        return;
+      }
       if (lastDocument == null) {
         querySnapshot = await _firestore
             .collection('products')
@@ -424,6 +454,10 @@ class Products with ChangeNotifier {
     QuerySnapshot querySnapshot;
     print(' valor que entro $searchedProd');
     try {
+      if (!hasMore && !refresh) {
+        print('No More Products');
+        return;
+      }
       if (lastDocument == null) {
         querySnapshot = await _firestore
             .collection('products')

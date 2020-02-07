@@ -4,16 +4,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../providers/products.dart';
 import '../widgets/product_item.dart';
+import '../models/product.dart';
 
 class ProdOverview extends StatefulWidget {
   final String category;
   final String searchTerm;
+  final bool showDelivery;
+  final bool showTradable;
+  final Function filterCallback;
 
-  const ProdOverview({
-    Key key,
-    this.category,
-    this.searchTerm,
-  }) : super(key: key);
+  const ProdOverview(
+      {Key key,
+      this.category,
+      this.searchTerm,
+      this.showDelivery,
+      this.showTradable,
+      this.filterCallback})
+      : super(key: key);
   static final routeName = '/prod-overview';
 
   @override
@@ -36,8 +43,8 @@ class _ProdOverviewState extends State<ProdOverview>
   @override
   void initState() {
     super.initState();
-    print('cat ${widget.category}');
-    print('rebuild ${widget.searchTerm}');
+
+    print('init  ${widget.showTradable}');
 
     _fetchProducts(refresh: true);
 
@@ -48,6 +55,9 @@ class _ProdOverviewState extends State<ProdOverview>
   void dispose() {
     _scrollController.removeListener(_infiniteScroll);
     _scrollController.dispose();
+    if (widget.showDelivery != null || widget.showTradable != null) {
+      widget.filterCallback(false);
+    }
     super.dispose();
   }
 
@@ -88,7 +98,9 @@ class _ProdOverviewState extends State<ProdOverview>
         lastDocumentCallback: _lastDocCallback,
         lastDocument: refresh ? null : _lastDocument,
       );
-    } else if (widget.searchTerm != null && widget.searchTerm != "") {
+    } else if (widget.searchTerm != null &&
+        widget.searchTerm != "" &&
+        widget.searchTerm != " ") {
       Provider.of<Products>(context, listen: false).fetchSearch(
           widget.searchTerm,
           refresh: refresh,
@@ -112,10 +124,29 @@ class _ProdOverviewState extends State<ProdOverview>
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : Consumer<Products>(
-            builder: (ctx, productData, child) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: productData.searchedItems.length == 0
+        : Consumer<Products>(builder: (ctx, productData, child) {
+            List<Product> newProdData = [];
+            if (widget.showDelivery == true && widget.showTradable == true) {
+              newProdData = productData.filterSearchTradDeliveryItems;
+              if (_hasMoreSearch == true) {
+                _fetchProducts();
+              }
+            } else if (widget.showTradable == true) {
+              newProdData = productData.filterSearchTradableItems;
+              if (_hasMoreSearch == true) {
+                _fetchProducts();
+              }
+            } else if (widget.showDelivery == true) {
+              newProdData = productData.filterSearchDeliveryItems;
+              if (_hasMoreSearch == true) {
+                _fetchProducts();
+              }
+            } else {
+              newProdData = productData.searchedItems;
+            }
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 1),
+              child: newProdData.length == 0
                   ? Center(
                       child: Text('Sem resultados'),
                     )
@@ -124,14 +155,13 @@ class _ProdOverviewState extends State<ProdOverview>
                       slivers: <Widget>[
                         SliverPadding(
                           padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 5),
+                              vertical: 10, horizontal: 2),
                           sliver: SliverGrid(
                             delegate: SliverChildBuilderDelegate(
                               (context, index) {
-                                return ProductItem(
-                                    productData.searchedItems[index]);
+                                return ProductItem(newProdData[index]);
                               },
-                              childCount: productData.searchedItems.length,
+                              childCount: newProdData.length,
                             ),
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
@@ -143,7 +173,7 @@ class _ProdOverviewState extends State<ProdOverview>
                           ),
                         ),
                         SliverToBoxAdapter(
-                          child: productData.searchedItems.length < 10
+                          child: newProdData.length < 10
                               ? SizedBox()
                               : Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -153,8 +183,8 @@ class _ProdOverviewState extends State<ProdOverview>
                         ),
                       ],
                     ),
-            ),
-          );
+            );
+          });
   }
 
   Widget _buildBody({bool cat = false}) {
@@ -164,9 +194,30 @@ class _ProdOverviewState extends State<ProdOverview>
           )
         : RefreshIndicator(
             onRefresh: () => _fetchProducts(refresh: true),
-            child: Consumer<Products>(
-              builder: (ctx, productData, child) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: Consumer<Products>(builder: (ctx, productData, child) {
+              List<Product> newProdData = [];
+              if (widget.showDelivery == true && widget.showTradable == true) {
+                newProdData = productData.filterTradDeliveryItems;
+                if (_hasMore == true) {
+                  _fetchProducts();
+                }
+              } else if (widget.showTradable == true) {
+                newProdData = productData.filterTradableItems;
+                if (_hasMore == true) {
+                  _fetchProducts();
+                }
+              } else if (widget.showDelivery == true) {
+                newProdData = productData.filterDeliveryItems;
+                if (_hasMore == true) {
+                  _fetchProducts();
+                }
+              } else if (cat == true) {
+                newProdData = productData.categoryItems;
+              } else {
+                newProdData = productData.items;
+              }
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 1),
                 child: (cat && productData.categoryItems.length == 0)
                     ? Center(
                         child: Text('Sem produtos nessa categoria'),
@@ -176,17 +227,15 @@ class _ProdOverviewState extends State<ProdOverview>
                         slivers: <Widget>[
                           SliverPadding(
                             padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 5),
+                                vertical: 10, horizontal: 2),
                             sliver: SliverGrid(
                               delegate: SliverChildBuilderDelegate(
                                 (context, index) {
-                                  return ProductItem(cat
-                                      ? productData.categoryItems[index]
-                                      : productData.items[index]);
+                                  return ProductItem(
+                                    newProdData[index],
+                                  );
                                 },
-                                childCount: cat
-                                    ? productData.categoryItems.length
-                                    : productData.items.length,
+                                childCount: newProdData.length,
                               ),
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
@@ -209,8 +258,8 @@ class _ProdOverviewState extends State<ProdOverview>
                           ),
                         ],
                       ),
-              ),
-            ),
+              );
+            }),
           );
   }
 
