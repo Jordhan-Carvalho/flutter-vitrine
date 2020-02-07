@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import './about_screen.dart';
 import './services_screen.dart';
 import './market_screen.dart';
 import './edit_product_screen.dart';
@@ -175,6 +176,16 @@ class _NavTabsState extends State<NavTabs> {
                         color: _showTradable ? Colors.green : Colors.black),
                   ),
                   value: FilterOptions.Tradable,
+                ),
+                PopupMenuItem(
+                  child: FlatButton.icon(
+                    label: Text("Sobre"),
+                    icon: Icon(Icons.priority_high),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(AboutScreen.routeName);
+                    },
+                  ),
+                  value: null,
                 ),
               ],
             ),

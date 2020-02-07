@@ -32,6 +32,7 @@ class Product {
   bool isFavorite;
   final String ownerName;
   List<String> searchTerms;
+  bool approved;
 
   Product({
     @required this.id,
@@ -48,6 +49,7 @@ class Product {
     @required this.telNumber,
     this.ownerName,
     this.searchTerms,
+    this.approved,
   });
 
   static List<String> get loadCategories {

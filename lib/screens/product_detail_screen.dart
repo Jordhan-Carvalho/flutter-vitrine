@@ -4,11 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../models/product.dart';
 import '../widgets/card_container.dart';
 import '../widgets/theme_button.dart';
 import '../widgets/favorite_button.dart';
+import '../providers/products.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   const ProductDetailScreen({Key key}) : super(key: key);
@@ -212,39 +214,102 @@ class ProductDetailScreen extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 50),
-                child: Row(
-                  children: <Widget>[
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        IconButton(
-                          color: Colors.amber,
-                          icon: Icon(
-                            Icons.flag,
-                            color: Colors.red,
-                            size: 20,
-                          ),
-                          tooltip: 'Reportar',
-                          onPressed: () {},
-                        ),
-                        Text(
-                          'Reportar',
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              Report(prod: prod),
               SizedBox(
                 height: 100,
               ),
             ]),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ====== ANOTHER WIDGET BECAUSE SCAFOLD
+
+class Report extends StatelessWidget {
+  const Report({
+    Key key,
+    @required this.prod,
+  }) : super(key: key);
+
+  final Product prod;
+
+  Future<bool> _reportConfirmation(BuildContext ctx) {
+    // returns a promisse with tru or false after the button is pressed
+    return showDialog(
+        context: ctx,
+        builder: (context) => AlertDialog(
+              title: Text('Atenção!! Reportar produto?'),
+              content: Text(
+                  'Só prossiga em caso de indisponibilidade ou quebra das regras, ações de má fé podem levar a suspensão de sua conta'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Sim'),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+                FlatButton(
+                  child: Text('Não'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+              ],
+            ));
+  }
+
+  Future<void> _reportProd(String prodId, BuildContext ctx) async {
+    if (!await _reportConfirmation(ctx)) {
+      return;
+    }
+    try {
+      await Provider.of<Products>(ctx, listen: false).reportProduct(prodId);
+      Scaffold.of(ctx)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text('Reportado com sucesso'),
+          duration: Duration(milliseconds: 2000),
+        ));
+    } catch (e) {
+      Scaffold.of(ctx)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text('Falha em reportar'),
+          duration: Duration(milliseconds: 2000),
+        ));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 50),
+      child: Row(
+        children: <Widget>[
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              IconButton(
+                color: Colors.amber,
+                icon: Icon(
+                  Icons.flag,
+                  color: Colors.red,
+                  size: 20,
+                ),
+                tooltip: 'Reportar',
+                onPressed: () => _reportProd(prod.id, context),
+              ),
+              Text(
+                'Reportar',
+                style: TextStyle(
+                  fontSize: 12,
+                ),
+              )
+            ],
           ),
         ],
       ),

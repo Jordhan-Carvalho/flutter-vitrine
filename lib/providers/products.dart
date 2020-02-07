@@ -100,7 +100,8 @@ class Products with ChangeNotifier {
         "imageUrl": prod.imageUrl,
         "ownerId": _userId,
         "ownerName": _userName,
-        "searchTerms": prodSearchTerms
+        "searchTerms": prodSearchTerms,
+        "approved": true,
       });
 
       _items.insert(
@@ -151,12 +152,14 @@ class Products with ChangeNotifier {
         if (lastDocument == null) {
           querySnapshot = await _firestore
               .collection('products')
+              .where('approved', isEqualTo: true)
               .orderBy("createdOn", descending: true)
               .limit(10)
               .getDocuments();
         } else {
           querySnapshot = await _firestore
               .collection('products')
+              .where('approved', isEqualTo: true)
               .orderBy("createdOn", descending: true)
               .startAfterDocument(lastDocument)
               .limit(10)
@@ -240,9 +243,9 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-    final prodIndex = _items.indexWhere((prod) => prod.id == id);
-    var existingProd = _items[prodIndex];
-    _items.removeAt(prodIndex);
+    final prodIndex = _userItems.indexWhere((prod) => prod.id == id);
+    var existingProd = _userItems[prodIndex];
+    _userItems.removeAt(prodIndex);
     notifyListeners();
     try {
       //img path is /images/userId/description&price&title&1 => the number changes 1,2,3,4
@@ -259,7 +262,7 @@ class Products with ChangeNotifier {
       }
       await _firestore.collection('products').document(id).delete();
     } catch (e) {
-      _items.insert(prodIndex, existingProd);
+      _userItems.insert(prodIndex, existingProd);
       notifyListeners();
       throw e;
     }
@@ -380,6 +383,7 @@ class Products with ChangeNotifier {
         querySnapshot = await _firestore
             .collection('products')
             .where('category', isEqualTo: category)
+            .where('approved', isEqualTo: true)
             .orderBy("createdOn", descending: true)
             .limit(10)
             .getDocuments();
@@ -387,6 +391,7 @@ class Products with ChangeNotifier {
         querySnapshot = await _firestore
             .collection('products')
             .where('category', isEqualTo: category)
+            .where('approved', isEqualTo: true)
             .orderBy("createdOn", descending: true)
             .startAfterDocument(lastDocument)
             .limit(10)
@@ -461,6 +466,7 @@ class Products with ChangeNotifier {
       if (lastDocument == null) {
         querySnapshot = await _firestore
             .collection('products')
+            .where('approved', isEqualTo: true)
             .where("searchTerms", arrayContains: searchedProd)
             .orderBy("createdOn", descending: true)
             .limit(10)
@@ -468,6 +474,7 @@ class Products with ChangeNotifier {
       } else {
         querySnapshot = await _firestore
             .collection('products')
+            .where('approved', isEqualTo: true)
             .where("searchTerms", arrayContains: searchedProd)
             .orderBy("createdOn", descending: true)
             .startAfterDocument(lastDocument)
@@ -520,6 +527,37 @@ class Products with ChangeNotifier {
       print(searchProds);
 
       notifyListeners();
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<void> reportProduct(String prodId) async {
+    try {
+      DocumentSnapshot docResult =
+          await _firestore.collection('products').document(prodId).get();
+      List<String> reports = [];
+
+      if (docResult.data['reports'] != null) {
+        reports = [...docResult.data['reports'].cast<String>()];
+        print(reports);
+      }
+
+      if (reports.contains(_userId)) {
+        throw "erro";
+      } else {
+        reports.add(_userId);
+        await _firestore.collection('products').document(prodId).updateData({
+          "reports": reports,
+        });
+
+        if (reports.length > 2) {
+          await _firestore.collection('products').document(prodId).updateData({
+            "approved": false,
+          });
+        }
+      }
     } catch (e) {
       print(e);
       throw e;
