@@ -162,28 +162,69 @@ class _NavTabsState extends State<NavTabs> {
               ),
               itemBuilder: (_) => [
                 PopupMenuItem(
-                  child: Text(
-                    'Entrega',
-                    style: TextStyle(
-                        color: _showDelivery ? Colors.green : Colors.black),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Icon(
+                        Icons.local_shipping,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      Text(
+                        'Entrega Disponível',
+                        style: TextStyle(
+                            color: _showDelivery ? Colors.green : Colors.black),
+                      ),
+                      !_showDelivery
+                          ? Icon(
+                              Icons.check_box_outline_blank,
+                              color: Theme.of(context).primaryColor,
+                            )
+                          : Icon(
+                              Icons.check_box,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                    ],
                   ),
                   value: FilterOptions.Delivery,
                 ),
                 PopupMenuItem(
-                  child: Text(
-                    'Trocavel',
-                    style: TextStyle(
-                        color: _showTradable ? Colors.green : Colors.black),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Icon(
+                        Icons.autorenew,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      Text(
+                        'Aceita Trocas',
+                        style: TextStyle(
+                            color: _showTradable ? Colors.green : Colors.black),
+                      ),
+                      !_showTradable
+                          ? Icon(
+                              Icons.check_box_outline_blank,
+                              color: Theme.of(context).primaryColor,
+                            )
+                          : Icon(
+                              Icons.check_box,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                    ],
                   ),
                   value: FilterOptions.Tradable,
                 ),
                 PopupMenuItem(
-                  child: FlatButton.icon(
-                    label: Text("Sobre"),
-                    icon: Icon(Icons.priority_high),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(AboutScreen.routeName);
-                    },
+                  child: Center(
+                    child: FlatButton.icon(
+                      label: Text("Sobre"),
+                      icon: Icon(
+                        Icons.info,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(AboutScreen.routeName);
+                      },
+                    ),
                   ),
                   value: null,
                 ),
