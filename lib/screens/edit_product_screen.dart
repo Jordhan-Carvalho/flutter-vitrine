@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -10,6 +12,7 @@ import '../providers/products.dart';
 import '../models/product.dart';
 import '../widgets/image_capture.dart';
 import '../providers/auth.dart';
+import '../helpers/text_formatter.dart';
 
 class EditProductScreen extends StatefulWidget {
   static final routeName = '/test';
@@ -300,24 +303,34 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                         child: TextFormField(
                                           initialValue: _editedProd.price == 0
                                               ? ''
-                                              : _editedProd.price.toString(),
+                                              : 'R\$ ${NumberFormat("#,##0.00", "pt_BR").format(_editedProd.price / 100).toString()}',
+                                          inputFormatters: [
+                                            WhitelistingTextInputFormatter
+                                                .digitsOnly,
+                                            CurrencyPtBrInputFormatter()
+                                          ],
                                           decoration: InputDecoration(
-                                              labelText: 'Preço',
-                                              helperText: "Formato 1500"),
+                                            labelText: 'Preço',
+                                          ),
                                           textInputAction: TextInputAction.next,
                                           keyboardType: TextInputType.number,
                                           focusNode: _priceFocusNode,
+                                          maxLength: 13,
                                           onFieldSubmitted: (_) =>
                                               FocusScope.of(context)
                                                   .nextFocus(),
                                           validator: (value) {
-                                            if (value.isEmpty) {
+                                            final newVal =
+                                                CurrencyPtBrInputFormatter
+                                                    .valueToIntString(value);
+                                            print(newVal);
+                                            if (newVal.isEmpty) {
                                               return "Por favor preencha o campo";
                                             }
-                                            if (int.tryParse(value) == null) {
-                                              return 'Somente valor inteiro';
+                                            if (int.tryParse(newVal) == null) {
+                                              return 'Fornecer valor valido';
                                             }
-                                            if (int.parse(value) <= 0) {
+                                            if (int.parse(newVal) <= 0) {
                                               return 'Valor precisa ser maior que 0';
                                             }
                                             return null;
@@ -331,7 +344,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                               condition: _editedProd.condition,
                                               id: _editedProd.id,
                                               title: _editedProd.title,
-                                              price: int.parse(value),
+                                              price: int.parse(
+                                                  CurrencyPtBrInputFormatter
+                                                      .valueToIntString(value)),
                                               imageUrl: _editedProd.imageUrl,
                                               description:
                                                   _editedProd.description,

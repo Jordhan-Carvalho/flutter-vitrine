@@ -30,7 +30,7 @@ class ProductItem extends StatelessWidget {
         ),
         footer: GridTileBar(
           leading: Text(
-            'R\$ ${NumberFormat("###,###", "pt_BR").format(product.price).toString()}',
+            'R\$ ${NumberFormat("#,##0.00", "pt_BR").format(product.price / 100).toString()}',
             style: TextStyle(color: Colors.white),
           ),
           trailing: Row(

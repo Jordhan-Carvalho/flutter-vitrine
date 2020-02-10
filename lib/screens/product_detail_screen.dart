@@ -66,7 +66,7 @@ class ProductDetailScreen extends StatelessWidget {
                             child: Text('R\$'),
                           ),
                           label: Text(
-                              '${NumberFormat("###,###", "pt_BR").format(prod.price).toString()}'),
+                              '${NumberFormat("#,##0.00", "pt_BR").format(prod.price / 100).toString()}'),
                         ),
                         Chip(
                           backgroundColor: Colors.transparent,
