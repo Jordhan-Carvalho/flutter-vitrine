@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
@@ -11,15 +10,20 @@ import '../widgets/card_container.dart';
 import '../widgets/theme_button.dart';
 import '../widgets/favorite_button.dart';
 import '../providers/products.dart';
+import '../widgets/carousel_pro.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   const ProductDetailScreen({Key key}) : super(key: key);
   static final routeName = '/product-detail';
 
   Widget _buildImages(Product prod) {
-    List<NetworkImage> images = [];
+    List<FadeInImage> images = [];
     for (var image in prod.imageUrl) {
-      images.add(NetworkImage(image));
+      images.add(FadeInImage(
+        placeholder: AssetImage('assets/images/FEDTpyE.gif'),
+        image: NetworkImage(image),
+        fit: BoxFit.cover,
+      ));
     }
 
     return Carousel(
@@ -27,7 +31,8 @@ class ProductDetailScreen extends StatelessWidget {
       dotSize: 3.0,
       dotSpacing: 10,
       indicatorBgPadding: 5,
-      autoplayDuration: Duration(seconds: 6),
+      autoplayDuration: Duration(seconds: 7),
+      borderRadius: false,
     );
   }
 
@@ -40,10 +45,17 @@ class ProductDetailScreen extends StatelessWidget {
         // slivers = scrollable areas of the screen
         slivers: <Widget>[
           SliverAppBar(
-            expandedHeight: 300,
+            expandedHeight: 400,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(prod.title),
+              title: DecoratedBox(
+                // position: DecorationPosition.foreground,
+                decoration: BoxDecoration(
+                  color: Colors.black38,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Text(prod.title),
+              ),
               background: Hero(
                 tag: prod.id,
                 child: _buildImages(prod),
@@ -216,7 +228,7 @@ class ProductDetailScreen extends StatelessWidget {
               ),
               Report(prod: prod),
               SizedBox(
-                height: 100,
+                height: 250,
               ),
             ]),
           ),
