@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../models/forbidden_exception.dart';
 import '../helpers/gen_search_terms.dart';
 import '../models/product.dart';
 
@@ -83,7 +84,7 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product prod) async {
     final _timeCreated = DateTime.now();
-    final prodSearchTerms = searchTerms(prod.title);
+    final prodSearchTerms = KeywordGenerator.searchTerms(prod.title);
 
     try {
       DocumentReference resp = await _firestore.collection('products').add({
@@ -218,7 +219,7 @@ class Products with ChangeNotifier {
 
   Future<void> updateProduct(String id, Product newProd) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
-    final prodSearchTerm = searchTerms(newProd.title);
+    final prodSearchTerm = KeywordGenerator.searchTerms(newProd.title);
     if (prodIndex >= 0) {
       try {
         await _firestore.collection('products').document(id).updateData({
@@ -545,7 +546,7 @@ class Products with ChangeNotifier {
       }
 
       if (reports.contains(_userId)) {
-        throw "erro";
+        throw ForbiddenException("Usuário já reportou");
       } else {
         reports.add(_userId);
         await _firestore.collection('products').document(prodId).updateData({
