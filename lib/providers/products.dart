@@ -82,8 +82,7 @@ class Products with ChangeNotifier {
     return items.firstWhere((prod) => prod.id == id);
   }
 
-  Future<void> addProduct(Product prod) async {
-    final _timeCreated = DateTime.now();
+  Future<void> addProduct(Product prod, DateTime timeCreated) async {
     final prodSearchTerms = KeywordGenerator.searchTerms(prod.title);
 
     try {
@@ -92,7 +91,7 @@ class Products with ChangeNotifier {
         "category": prod.category,
         "city": "Barreiras",
         "condition": prod.condition == Condition.Usado ? "Usado" : "Novo",
-        "createdOn": _timeCreated.toIso8601String(),
+        "createdOn": timeCreated.toIso8601String(),
         "delivery": prod.delivery,
         "description": prod.description,
         "price": prod.price,
@@ -113,7 +112,7 @@ class Products with ChangeNotifier {
               category: prod.category,
               city: prod.city,
               condition: prod.condition,
-              createdOn: _timeCreated,
+              createdOn: timeCreated,
               delivery: prod.delivery,
               description: prod.description,
               price: prod.price,
@@ -253,7 +252,7 @@ class Products with ChangeNotifier {
       existingProd.imageUrl.forEach((imgUl) => print(imgUl));
       for (var i = 0; i < existingProd.imageUrl.length; i++) {
         String imgPath =
-            'images/$_userId/${existingProd.description.substring(0, 15)}&${existingProd.price}&${existingProd.title}&$i';
+            'images/$_userId/${existingProd.createdOn.toString()}&$i';
         //regex remove white spaces
         print(imgPath.replaceAll(new RegExp(r"\s+\b|\b\s"), ""));
         await _storage
@@ -279,7 +278,6 @@ class Products with ChangeNotifier {
           .document('$_userId')
           .collection('favorites')
           .getDocuments();
-      print(resp.documents.length);
 
       var favoriteProds = <Product>[];
 
@@ -302,7 +300,6 @@ class Products with ChangeNotifier {
           ownerName: item.data['ownerName'],
         ));
       });
-      print(favoriteProds.length);
       _favItems = favoriteProds;
       notifyListeners();
     } catch (e) {

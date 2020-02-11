@@ -3,6 +3,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
+import './providers/services.dart';
+import './screens/service_category_screen.dart';
 import './screens/about_screen.dart';
 import './screens/prod_overview_screen.dart';
 import './widgets/comming_soon.dart';
@@ -41,6 +43,12 @@ class MyApp extends StatelessWidget {
               prevProds..userId = authData.userId;
               return prevProds;
             }),
+        ChangeNotifierProxyProvider<Auth, Services>(
+            create: (_) => Services(),
+            update: (ctx, authData, prevProds) {
+              prevProds..userId = authData.userId;
+              return prevProds;
+            }),
       ],
       // whenever auth changes, call rebuild
       child: Consumer<Auth>(
@@ -50,6 +58,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.green,
             accentColor: Colors.greenAccent,
             canvasColor: Color.fromRGBO(255, 254, 229, 1),
+            cardColor: Color.fromRGBO(255, 254, 240, 1),
             fontFamily: 'RobotoCondensed',
             iconTheme: IconThemeData(color: Colors.green),
             textTheme: ThemeData.light().textTheme.copyWith(
@@ -84,6 +93,8 @@ class MyApp extends StatelessWidget {
               ProdOverview.routeName: (ctx) => ProdOverview(
                     category: settings.arguments,
                   ),
+              ServiceCategoryScreen.routeName: (_) =>
+                  ServiceCategoryScreen(settings.arguments),
             };
             WidgetBuilder builder = routes[settings.name];
             return MaterialPageRoute(builder: (ctx) => builder(ctx));

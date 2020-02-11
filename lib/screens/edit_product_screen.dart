@@ -127,15 +127,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
       try {
         // Loop thru an array of files and for each upload the file and add the url on _editProd
         final String _userId = Provider.of<Auth>(context, listen: false).userId;
+        final _timeCreated = DateTime.now();
         for (var i = 0; i < _filesArray.length; i++) {
-          String imgNamePath =
-              'images/$_userId/${_editedProd.description.substring(0, 15)}&${_editedProd.price}&${_editedProd.title}&$i';
+          String imgNamePath = 'images/$_userId/${_timeCreated.toString()}&$i';
           await _startUpload(
               imageName: imgNamePath.replaceAll(new RegExp(r"\s+\b|\b\s"), ""),
               file: _filesArray[i]);
         }
         await Provider.of<Products>(context, listen: false)
-            .addProduct(_editedProd);
+            .addProduct(_editedProd, _timeCreated);
       } catch (e) {
         print(e);
         await showDialog(
@@ -302,7 +302,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       Expanded(
                                         child: TextFormField(
                                           initialValue: _editedProd.price == 0
-                                              ? ''
+                                              ? 'R\$ ${NumberFormat("#,##0.00", "pt_BR").format(0 / 100).toString()}'
                                               : 'R\$ ${NumberFormat("#,##0.00", "pt_BR").format(_editedProd.price / 100).toString()}',
                                           inputFormatters: [
                                             WhitelistingTextInputFormatter

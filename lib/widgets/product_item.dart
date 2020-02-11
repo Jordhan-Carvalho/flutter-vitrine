@@ -22,7 +22,8 @@ class ProductItem extends StatelessWidget {
           child: Hero(
             tag: product.id,
             child: FadeInImage(
-              placeholder: AssetImage('assets/images/product-placeholder.png'),
+              placeholder:
+                  const AssetImage('assets/images/product-placeholder.png'),
               image: NetworkImage(product.imageUrl[0]),
               fit: BoxFit.cover,
             ),
@@ -31,18 +32,26 @@ class ProductItem extends StatelessWidget {
         footer: GridTileBar(
           leading: Text(
             'R\$ ${NumberFormat("#,##0.00", "pt_BR").format(product.price / 100).toString()}',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+              color: Colors.white,
+            ),
           ),
           trailing: Row(
             children: <Widget>[
               if (product.tradable)
                 const Tooltip(
-                  child: Icon(Icons.autorenew),
+                  child: const Icon(
+                    Icons.autorenew,
+                    size: 15,
+                  ),
                   message: 'Trocável',
                 ),
               if (product.delivery)
                 const Tooltip(
-                  child: Icon(Icons.local_shipping),
+                  child: const Icon(
+                    Icons.local_shipping,
+                    size: 15,
+                  ),
                   message: 'Entrega disponível',
                 ),
             ],
