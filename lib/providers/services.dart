@@ -20,6 +20,11 @@ class Services with ChangeNotifier {
     return [..._items];
   }
 
+  List<Service> filterBySubcategories(String subcategory) {
+    return _items
+        .where((service) => service.subcategory == subcategory)
+        .toList();
+  }
   // List<Product> get filterDeliveryItems {
   //   return _items.where((prod) => prod.delivery).toList();
   // }
@@ -28,7 +33,7 @@ class Services with ChangeNotifier {
   //   return _items.where((prod) => prod.tradable).toList();
   // }
 
-  // List<Product> get filterTradDeliveryItems {
+  // List<Service> get filterTradDeliveryItems() {
   //   return _items.where((prod) => prod.delivery && prod.tradable).toList();
   // }
 

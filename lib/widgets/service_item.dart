@@ -8,21 +8,14 @@ class ServiceItem extends StatelessWidget {
 
   const ServiceItem({@required this.service});
 
-  void selectMeal(BuildContext ctx) {
-    // the result of the promise comes back with the argument passed on pop (service detail screen)
-    // the promise (then) only resolves whe the page is poped
-    // Navigator.of(ctx)
-    //     .pushNamed(
-    //   ServiceDetailScreen.routeName,
-    //   arguments: service,
-    // );
-  }
-
   @override
   Widget build(BuildContext context) {
     // Same thing as Gesture but with ripple effect
     return InkWell(
-      onTap: () => selectMeal(context),
+      onTap: () {
+        Navigator.of(context)
+            .pushNamed(ServiceDetailScreen.routeName, arguments: service);
+      },
       child: Card(
         margin: const EdgeInsets.all(10),
         elevation: 4,
@@ -39,11 +32,15 @@ class ServiceItem extends StatelessWidget {
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
                   ),
-                  child: Image.network(
-                    service.imagesUrl[0],
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+                  child: Hero(
+                    tag: service.id,
+                    //TODO change to fadeinimage with placehold
+                    child: Image.network(
+                      service.imagesUrl[0],
+                      height: 150,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 //only workns inside Stack
@@ -73,39 +70,19 @@ class ServiceItem extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.schedule,
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text(' min')
-                    ],
+                  Icon(
+                    Icons.info,
                   ),
-                  Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.work,
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text('sdfsdfdsf')
-                    ],
+                  SizedBox(
+                    width: 5,
                   ),
-                  Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.attach_money,
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text('sdfsdf')
-                    ],
-                  )
+                  Expanded(
+                    child: Text(
+                      service.slogan,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ),
                 ],
               ),
             )

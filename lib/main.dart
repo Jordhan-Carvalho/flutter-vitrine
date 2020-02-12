@@ -3,6 +3,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
+import './screens/service_detail_screen.dart';
 import './providers/services.dart';
 import './screens/service_category_screen.dart';
 import './screens/about_screen.dart';
@@ -85,6 +86,7 @@ class MyApp extends StatelessWidget {
             EditProductScreen.routeName: (_) => EditProductScreen(),
             LoginScreen.routeName: (_) => LoginScreen(),
             AboutScreen.routeName: (_) => AboutScreen(),
+            ServiceDetailScreen.routeName: (_) => ServiceDetailScreen(),
           },
           // Used to pass args on statefull widgets (initState widget.arg)
           onGenerateRoute: (RouteSettings settings) {
