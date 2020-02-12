@@ -50,7 +50,7 @@ class ServiceDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       // height: mediaQuery.size.height * 0.4,
       constraints: new BoxConstraints(
-        maxHeight: mediaQuery.size.height * 0.3,
+        maxHeight: mediaQuery.size.height * 0.4,
       ),
       width: mediaQuery.size.width * 0.98,
       child: child,
@@ -73,24 +73,33 @@ class ServiceDetailScreen extends StatelessWidget {
       body: CustomScrollView(
         // slivers = scrollable areas of the screen
         slivers: <Widget>[
-          SliverAppBar(
-            expandedHeight: 300,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              title: DecoratedBox(
-                // position: DecorationPosition.foreground,
-                decoration: BoxDecoration(
-                  color: Colors.black38,
-                  borderRadius: BorderRadius.circular(5),
+          if (service.tier == Tier.Premium)
+            SliverAppBar(
+              expandedHeight: 300,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                title: DecoratedBox(
+                  // position: DecorationPosition.foreground,
+                  decoration: BoxDecoration(
+                    color: Colors.black38,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text(service.title),
                 ),
-                child: Text(service.title),
-              ),
-              background: Hero(
-                tag: service.id,
-                child: _buildImages(service),
+                background: Hero(
+                  tag: service.id,
+                  child: _buildImages(service),
+                ),
               ),
             ),
-          ),
+          if (service.tier == Tier.Basic)
+            SliverAppBar(
+              // expandedHeight: 50,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(service.title),
+              ),
+            ),
           SliverList(
             delegate: SliverChildListDelegate([
               Column(
@@ -98,13 +107,11 @@ class ServiceDetailScreen extends StatelessWidget {
                   _buildSectionTitle("Descrição", context),
                   _buildContainer(
                       Card(
-                        // color: Theme.of(context).accentColor,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 5,
-                            horizontal: 10,
-                          ),
-                          child: Text(service.description),
+                        color: Colors.white,
+                        elevation: 0,
+                        child: Text(
+                          service.description,
+                          style: Theme.of(context).textTheme.subtitle,
                         ),
                       ),
                       mediaQuery),
@@ -131,7 +138,7 @@ class ServiceDetailScreen extends StatelessWidget {
                 ],
               ),
               SizedBox(
-                height: 200,
+                height: 50,
               )
             ]),
           ),

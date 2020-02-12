@@ -24,47 +24,60 @@ class ServiceItem extends StatelessWidget {
         ),
         child: Column(
           children: <Widget>[
-            Stack(
-              children: <Widget>[
-                //Clip force the widget to take a certain form
-                ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15),
-                  ),
-                  child: Hero(
-                    tag: service.id,
-                    //TODO change to fadeinimage with placehold
-                    child: Image.network(
-                      service.imagesUrl[0],
-                      height: 150,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
+            if (service.tier == Tier.Premium)
+              Stack(
+                children: <Widget>[
+                  //Clip force the widget to take a certain form
+                  ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
                     ),
-                  ),
-                ),
-                //only workns inside Stack
-                Positioned(
-                  bottom: 20,
-                  right: 10,
-                  child: Container(
-                    width: 300,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    color: Color.fromRGBO(0, 0, 0, 0.5),
-                    child: Text(
-                      service.title,
-                      style: TextStyle(
-                        fontSize: 26,
-                        color: Colors.white,
+                    child: Hero(
+                      tag: service.id,
+                      child: FadeInImage(
+                        height: 150,
+                        width: double.infinity,
+                        placeholder: const AssetImage(
+                          'assets/images/product-placeholder.png',
+                        ),
+                        image: NetworkImage(service.imagesUrl[0]),
+                        fit: BoxFit.cover,
                       ),
-                      softWrap: true,
-                      overflow: TextOverflow.fade,
                     ),
                   ),
-                )
-              ],
-            ),
+                  //only workns inside Stack
+                  Positioned(
+                    bottom: 20,
+                    right: 10,
+                    child: Container(
+                      width: 300,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 10),
+                      color: Color.fromRGBO(0, 0, 0, 0.5),
+                      child: Text(
+                        service.title,
+                        style: TextStyle(
+                          fontSize: 26,
+                          color: Colors.white,
+                        ),
+                        softWrap: true,
+                        overflow: TextOverflow.fade,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            if (service.tier == Tier.Basic)
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text(
+                  service.title,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: Theme.of(context).textTheme.title,
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.all(20),
               child: Row(

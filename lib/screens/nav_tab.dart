@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import './buy_services.dart';
 import './about_screen.dart';
 import './services_screen.dart';
 import './market_screen.dart';
@@ -230,17 +231,24 @@ class _NavTabsState extends State<NavTabs> {
                 ),
               ],
             ),
-          FlatButton(
-            child: Text(
-              '\$ Vender',
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () =>
-                Navigator.of(context).pushNamed(EditProductScreen.routeName),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50.0),
-            ),
-          ),
+          _selectedPageIndex == 3
+              ? FlatButton.icon(
+                  textColor: Colors.white,
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed(BuyServices.routeName),
+                  icon: Icon(Icons.group),
+                  label: Text("Anunciar"))
+              : FlatButton(
+                  child: Text(
+                    '\$ Vender',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(EditProductScreen.routeName),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                ),
         ],
       ),
       drawer: MainDrawer(),

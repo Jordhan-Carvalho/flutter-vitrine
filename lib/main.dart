@@ -3,6 +3,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
+import './screens/buy_services.dart';
 import './screens/service_detail_screen.dart';
 import './providers/services.dart';
 import './screens/service_category_screen.dart';
@@ -57,6 +58,9 @@ class MyApp extends StatelessWidget {
           title: 'Vitrine',
           theme: ThemeData(
             primarySwatch: Colors.green,
+            // primaryColor: Color.fromRGBO(240, 101, 94, 1),
+            // primaryColorLight: Color.fromRGBO(240, 101, 120, 1),
+            // primaryColorDark: Color.fromRGBO(240, 101, 80, 1),
             accentColor: Colors.greenAccent,
             canvasColor: Color.fromRGBO(255, 254, 229, 1),
             cardColor: Color.fromRGBO(255, 254, 240, 1),
@@ -87,6 +91,7 @@ class MyApp extends StatelessWidget {
             LoginScreen.routeName: (_) => LoginScreen(),
             AboutScreen.routeName: (_) => AboutScreen(),
             ServiceDetailScreen.routeName: (_) => ServiceDetailScreen(),
+            BuyServices.routeName: (_) => BuyServices(),
           },
           // Used to pass args on statefull widgets (initState widget.arg)
           onGenerateRoute: (RouteSettings settings) {

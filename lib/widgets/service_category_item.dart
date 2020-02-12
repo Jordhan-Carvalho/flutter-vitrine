@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../screens/service_category_screen.dart';
 
-class ServiceItemList extends StatelessWidget {
+class ServiceCategoryItem extends StatelessWidget {
   final String category;
   final List<String> subcategories;
   final Icon icon;
 
-  ServiceItemList(this.category, this.subcategories, this.icon);
+  ServiceCategoryItem(this.category, this.subcategories, this.icon);
 
   @override
   Widget build(BuildContext context) {

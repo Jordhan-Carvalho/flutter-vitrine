@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/service_item_list.dart';
+import '../widgets/service_category_item.dart';
 import '../models/service.dart';
 
 class ServicesScreen extends StatelessWidget {
@@ -31,7 +31,7 @@ class ServicesScreen extends StatelessWidget {
         SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, index) {
-              return ServiceItemList(
+              return ServiceCategoryItem(
                 Service.loadCategories.keys.toList()[index],
                 Service.loadCategories.values.toList()[index]['subcategory'],
                 Service.loadCategories.values.toList()[index]['icon'],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 enum City { Barreiras, LEM }
+enum Tier { Basic, Advanced, Premium }
 
 class Service {
   final String id;
@@ -16,6 +17,7 @@ class Service {
   final bool approved;
   final DateTime createdOn;
   final City city;
+  Tier tier;
 
   Service({
     @required this.id,
@@ -31,6 +33,7 @@ class Service {
     @required this.serviceTags,
     @required this.description,
     @required this.city,
+    @required this.tier,
   });
 
   static Map<String, Map<String, dynamic>> get loadCategories {
