@@ -88,7 +88,6 @@
 				A6B12EE97D8AD4567740123A /* Pods-Runner.release.xcconfig */,
 				E68DDF7F05999C26D900ECB8 /* Pods-Runner.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -164,6 +163,7 @@
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				7B8F32C84ED1DECE2C98635B /* [CP] Embed Pods Frameworks */,
 				6E61D8FDD486F0FB73254E60 /* [CP] Copy Pods Resources */,
+				E4E954DA23F5EA9E00ECC917 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -301,7 +301,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
+		};
+		E4E954DA23F5EA9E00ECC917 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${PODS_ROOT}/Fabric/run\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
