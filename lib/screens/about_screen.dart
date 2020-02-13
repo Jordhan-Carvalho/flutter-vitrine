@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
 
-import '../widgets/main_drawer.dart';
-
 class AboutScreen extends StatelessWidget {
   const AboutScreen({Key key}) : super(key: key);
 

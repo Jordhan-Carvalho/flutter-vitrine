@@ -100,27 +100,49 @@ class BuyServices extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
-                  "Plano Premium R\$50.00",
+                  "Plano Mensal Premium R\$50.00",
                   style: Theme.of(context).textTheme.title,
                 )),
+            Text(
+              "*10% de desconto no plano anual (R\$ 45.00)",
+              style: TextStyle(color: Colors.grey),
+            ),
             BenefitsItem(benefitsPremium),
+            Padding(
+              padding: const EdgeInsets.only(right: 300.0),
+              child: Text(
+                "Exemplo",
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
             ServiceItem(service: service),
             Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
-                  "Plano Básico R\$25.00",
+                  "Plano Mensal Básico R\$25.00",
                   style: Theme.of(context).textTheme.title,
                 )),
+            Text(
+              "*10% de desconto no plano anual (R\$ 22.50)",
+              style: TextStyle(color: Colors.grey),
+            ),
             BenefitsItem(benefitsBasic),
+            Padding(
+              padding: const EdgeInsets.only(right: 300.0),
+              child: Text(
+                "Exemplo",
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
             ServiceItem(service: serviceBasic),
             SizedBox(
-              height: 15,
+              height: 30,
             ),
             RaisedButton.icon(
               color: Theme.of(context).primaryColor,
               onPressed: () {
-                FlutterOpenWhatsapp.sendSingleMessage("55${service.telNumber}",
-                    "Olá ${service.title}, te achei no Vitrine Virtual e estou interessado na sua prestação de serviço Vitrine... está disponível?");
+                FlutterOpenWhatsapp.sendSingleMessage("5577991116269",
+                    "Olá, estou interessado em anunciar prestação de serviço no Vitrine... como proceder?");
               },
               icon: Icon(MdiIcons.whatsapp),
               label: Text("Entrar em contato"),

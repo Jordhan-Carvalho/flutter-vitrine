@@ -42,7 +42,7 @@ class LoginScreen extends StatelessWidget {
                       child: Container(
                         margin: EdgeInsets.only(bottom: 20.0),
                         padding: EdgeInsets.symmetric(
-                            vertical: 1.0, horizontal: 80.0),
+                            vertical: 1.0, horizontal: 50.0),
                         //COULD BE USED INSTEAD OF TRASNFORM.ROTATE
                         // transform: Matrix4.rotationZ(-8 * pi / 180)
                         //   ..translate(-10.0),

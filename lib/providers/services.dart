@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 import '../models/service.dart';
 
 class Services with ChangeNotifier {
   Firestore _firestore = Firestore.instance;
-  final FirebaseStorage _storage =
-      FirebaseStorage(storageBucket: 'gs://vitrine-3da15.appspot.com');
   List<Service> _items = [];
 
   String _userId;

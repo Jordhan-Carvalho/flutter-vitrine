@@ -17,7 +17,7 @@ class ServicesScreen extends StatelessWidget {
           flexibleSpace: FlexibleSpaceBar(
             background: Center(
               child: Text(
-                "Para a sua segurança, os profissionais listados são verificados e aprovados manualmente, assim, evitando fraudes.",
+                "Para a sua segurança, os profissionais listados são verificados e aprovados manualmente.",
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,

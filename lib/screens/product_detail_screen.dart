@@ -140,31 +140,36 @@ class ProductDetailScreen extends StatelessWidget {
                 ),
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15),
-                    child: Text(
-                      'Vendido por:',
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                    ),
+                  Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Text(
+                          'Vendido por:',
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      ),
+                      Text(
+                        prod.ownerName ?? "falha",
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColorDark,
+                          fontStyle: FontStyle.italic,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.end,
+                      ),
+                    ],
                   ),
-                  Text(
-                    prod.ownerName ?? "falha",
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColorDark,
-                      fontStyle: FontStyle.italic,
-                      fontSize: 15,
-                    ),
-                    textAlign: TextAlign.end,
-                  ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 45.0),
+                    padding: const EdgeInsets.only(right: 10),
                     child: Text(
                       prod.category,
                       style: TextStyle(
                         color: Theme.of(context).primaryColorDark,
                         fontStyle: FontStyle.italic,
-                        fontSize: 15,
+                        fontSize: 12,
                       ),
                       textAlign: TextAlign.end,
                     ),
