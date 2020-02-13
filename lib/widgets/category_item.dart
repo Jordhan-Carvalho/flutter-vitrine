@@ -25,13 +25,16 @@ class CategoryItem extends StatelessWidget {
             Stack(
               children: <Widget>[
                 //Clip force the widget to take a certain form
-                ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  child: Image.asset(
-                    imgPath,
-                    height: 195,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+                Container(
+                  height: 195,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    child: Image.asset(
+                      imgPath,
+                      // height: 195,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 //only workns inside Stack

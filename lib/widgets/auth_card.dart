@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/auth.dart';
 
 class AuthCard extends StatefulWidget {
@@ -75,7 +76,26 @@ class _AuthCardState extends State<AuthCard> {
                     height: 20,
                   ),
                   FlatButton(
-                    child: Text('Entrar com Facebook'),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          MdiIcons.facebook,
+                          color: Colors.blue,
+                          size: 35,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            'Entrar com Facebook',
+                            style: TextStyle(
+                              fontSize: 15,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                     onPressed: () {},
                     padding:
                         EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),

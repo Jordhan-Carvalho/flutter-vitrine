@@ -143,7 +143,11 @@ class _NavTabsState extends State<NavTabs> {
         // leading: _isSearching ? const BackButton() : Container(),
         centerTitle: _selectedPageIndex == 0 ? false : true,
         title: _selectedPageIndex == 0
-            ? (_isSearching ? _buildSearchField() : Text('Vitrine'))
+            ? (_isSearching
+                ? _buildSearchField()
+                : Image(
+                    image: AssetImage('assets/images/logo-branco-menor.png'),
+                  ))
             : Text(_pages[_selectedPageIndex]['title']),
         actions: <Widget>[
           if (_selectedPageIndex == 0) ..._buildActions(),
@@ -263,7 +267,7 @@ class _NavTabsState extends State<NavTabs> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,
         // backgroundColor: Colors.black,
-        unselectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey,
         selectedItemColor: Theme.of(context).primaryColor,
         currentIndex: _selectedPageIndex,
         elevation: 10,

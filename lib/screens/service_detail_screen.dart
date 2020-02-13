@@ -64,10 +64,14 @@ class ServiceDetailScreen extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        child: Icon(MdiIcons.whatsapp),
+        backgroundColor: Theme.of(context).primaryColor,
+        child: Icon(
+          MdiIcons.whatsapp,
+          color: Colors.white,
+        ),
         onPressed: () {
           FlutterOpenWhatsapp.sendSingleMessage("55${service.telNumber}",
-              "Olá ${service.title}, te achei no Vitrine Virtual e estou interessado na sua prestação de serviço Vitrine... está disponível?");
+              "Olá ${service.title}, te achei no Vitrine Virtual e estou interessado na sua prestação de serviço... está disponível?");
         },
       ),
       body: CustomScrollView(

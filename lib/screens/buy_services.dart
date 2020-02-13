@@ -87,11 +87,15 @@ class BuyServices extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "Texto explicando os planos e tal porque devemos sempre agir conforme a lei do escambal e tal e grande pa carai doido mano para com isso",
+                  "Para evitar fraudes, todo processo é feito manualmente através do contato fornecido abaixo, no qual o anunciante irá fornecer as informações pertinentes para verificação e cadastro.",
                   textScaleFactor: 1.3,
                   style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
                 ),
               ),
+            ),
+            SizedBox(
+              height: 10,
             ),
             Padding(
                 padding: const EdgeInsets.all(8),

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/services.dart';
 import '../widgets/service_item.dart';
 import '../models/service.dart';
+import './buy_services.dart';
 
 class ServiceCategoryScreen extends StatefulWidget {
   static const routeName = '/category-services';
@@ -51,6 +52,14 @@ class _ServiceCategoryScreenState extends State<ServiceCategoryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.category}'),
+        actions: <Widget>[
+          FlatButton.icon(
+              textColor: Colors.white,
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(BuyServices.routeName),
+              icon: Icon(Icons.group),
+              label: Text("Anunciar"))
+        ],
       ),
       body: _isLoading
           ? Center(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../screens/about_screen.dart';
 import '../screens/user_products_screen.dart';
 import '../providers/auth.dart';
 
@@ -28,7 +29,13 @@ class MainDrawer extends StatelessWidget {
       child: Column(
         children: <Widget>[
           AppBar(
-            title: Text('Vitrine Barreiras'),
+            title: Center(
+              child: Image(
+                image: AssetImage('assets/images/logo-branco-menor.png'),
+                height: 68,
+                // fit: BoxFit.fill,
+              ),
+            ),
             automaticallyImplyLeading: false,
           ),
           _buildItem(
@@ -42,6 +49,12 @@ class MainDrawer extends StatelessWidget {
             'Meus produtos',
             () => Navigator.of(context)
                 .pushReplacementNamed(UserProductsScreen.routeName),
+            context,
+          ),
+          _buildItem(
+            Icons.info,
+            'Sobre',
+            () => Navigator.of(context).pushNamed(AboutScreen.routeName),
             context,
           ),
           _buildItem(

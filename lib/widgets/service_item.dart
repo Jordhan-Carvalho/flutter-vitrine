@@ -39,7 +39,7 @@ class ServiceItem extends StatelessWidget {
                         height: 150,
                         width: double.infinity,
                         placeholder: const AssetImage(
-                          'assets/images/product-placeholder.png',
+                          'assets/images/FEDTpyE.gif',
                         ),
                         image: NetworkImage(service.imagesUrl[0]),
                         fit: BoxFit.cover,
