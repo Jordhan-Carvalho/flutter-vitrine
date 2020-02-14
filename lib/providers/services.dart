@@ -69,25 +69,28 @@ class Services with ChangeNotifier {
         "serviceTags": service.serviceTags,
         "approved": true,
         "slogan": service.slogan,
-        "tier": service.tier.index
+        "tier": service.tier.index,
+        "portfolio": service.portfolio
       });
 
       _items.insert(
           0,
           Service(
-              id: resp.documentID,
-              title: service.title,
-              category: service.category,
-              createdOn: _timeCreated,
-              city: service.city,
-              subcategory: service.subcategory,
-              description: service.description,
-              telNumber: service.telNumber,
-              imagesUrl: service.imagesUrl,
-              ownerId: _userId,
-              serviceTags: service.serviceTags,
-              slogan: service.slogan,
-              tier: service.tier));
+            id: resp.documentID,
+            title: service.title,
+            category: service.category,
+            createdOn: _timeCreated,
+            city: service.city,
+            subcategory: service.subcategory,
+            description: service.description,
+            telNumber: service.telNumber,
+            imagesUrl: service.imagesUrl,
+            ownerId: _userId,
+            serviceTags: service.serviceTags,
+            slogan: service.slogan,
+            tier: service.tier,
+            portfolio: service.portfolio,
+          ));
       notifyListeners();
     } catch (e) {
       print(e);
@@ -165,19 +168,21 @@ class Services with ChangeNotifier {
 
       querySnapshot.documents.forEach((item) {
         servicesList.add(Service(
-            id: item.documentID,
-            subcategory: item.data['subcategory'],
-            category: item.data['category'],
-            description: item.data['description'],
-            telNumber: item.data['telNumber'],
-            title: item.data['title'],
-            city: item.data['city'] == "Barreiras" ? City.Barreiras : City.LEM,
-            createdOn: DateTime.parse(item.data['createdOn']),
-            imagesUrl: item.data['imagesUrl'].cast<String>(),
-            serviceTags: item.data['serviceTags'].cast<String>(),
-            ownerId: item.data['ownerId'],
-            slogan: item.data['slogan'],
-            tier: Tier.values[item.data['tier']]));
+          id: item.documentID,
+          subcategory: item.data['subcategory'],
+          category: item.data['category'],
+          description: item.data['description'],
+          telNumber: item.data['telNumber'],
+          title: item.data['title'],
+          city: item.data['city'] == "Barreiras" ? City.Barreiras : City.LEM,
+          createdOn: DateTime.parse(item.data['createdOn']),
+          imagesUrl: item.data['imagesUrl'].cast<String>(),
+          serviceTags: item.data['serviceTags'].cast<String>(),
+          ownerId: item.data['ownerId'],
+          slogan: item.data['slogan'],
+          tier: Tier.values[item.data['tier']],
+          portfolio: item.data['portfolio'],
+        ));
       });
 
       _items = servicesList;
