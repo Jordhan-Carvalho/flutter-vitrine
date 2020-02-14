@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
+import './screens/user_services_screen.dart';
 import './screens/buy_services.dart';
 import './screens/service_detail_screen.dart';
 import './providers/services.dart';
@@ -31,7 +32,7 @@ void main() async {
   // This is only to be used for confirming that reports are being
   // submitted as expected. It is not intended to be used for everyday
   // development.
-  Crashlytics.instance.enableInDevMode = true;
+  // Crashlytics.instance.enableInDevMode = true;
   // Pass all uncaught errors from the framework to Crashlytics.
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
@@ -102,6 +103,7 @@ class MyApp extends StatelessWidget {
             AboutScreen.routeName: (_) => AboutScreen(),
             ServiceDetailScreen.routeName: (_) => ServiceDetailScreen(),
             BuyServices.routeName: (_) => BuyServices(),
+            UserServicesScreen.routeName: (_) => UserServicesScreen(),
           },
           // Used to pass args on statefull widgets (initState widget.arg)
           onGenerateRoute: (RouteSettings settings) {

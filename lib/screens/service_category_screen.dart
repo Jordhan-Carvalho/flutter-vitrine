@@ -54,11 +54,12 @@ class _ServiceCategoryScreenState extends State<ServiceCategoryScreen> {
         title: Text('${widget.category}'),
         actions: <Widget>[
           FlatButton.icon(
-              textColor: Colors.white,
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(BuyServices.routeName),
-              icon: Icon(Icons.group),
-              label: Text("Anunciar"))
+            textColor: Colors.white,
+            onPressed: () =>
+                Navigator.of(context).pushNamed(BuyServices.routeName),
+            icon: Icon(Icons.group),
+            label: Text("Anunciar"),
+          ),
         ],
       ),
       body: _isLoading

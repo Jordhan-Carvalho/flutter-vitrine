@@ -43,7 +43,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
           isFavorite
               ? Icon(
                   Icons.star,
-                  color: Theme.of(context).primaryColor,
+                  // color: Theme.of(context).primaryColor,
                 )
               : Icon(Icons.star_border),
         ],

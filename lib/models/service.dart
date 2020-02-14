@@ -17,6 +17,7 @@ class Service {
   final bool approved;
   final DateTime createdOn;
   final City city;
+  final String portfolio;
   Tier tier;
 
   Service({
@@ -34,6 +35,7 @@ class Service {
     @required this.description,
     @required this.city,
     @required this.tier,
+    this.portfolio,
   });
 
   static Map<String, Map<String, dynamic>> get loadCategories {

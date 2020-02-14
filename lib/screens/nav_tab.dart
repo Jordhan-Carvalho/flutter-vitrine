@@ -146,7 +146,8 @@ class _NavTabsState extends State<NavTabs> {
             ? (_isSearching
                 ? _buildSearchField()
                 : Image(
-                    image: AssetImage('assets/images/logo-branco-menor.png'),
+                    image: AssetImage(
+                        'assets/images/vtn-white-transparent-cut.png'),
                   ))
             : Text(_pages[_selectedPageIndex]['title']),
         actions: <Widget>[
@@ -242,17 +243,19 @@ class _NavTabsState extends State<NavTabs> {
                       Navigator.of(context).pushNamed(BuyServices.routeName),
                   icon: Icon(Icons.group),
                   label: Text("Anunciar"))
-              : FlatButton(
-                  child: Text(
-                    '\$ Vender',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(EditProductScreen.routeName),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50.0),
-                  ),
-                ),
+              : _selectedPageIndex == 0 || _selectedPageIndex == 1
+                  ? FlatButton(
+                      child: Text(
+                        '\$ Vender',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () => Navigator.of(context)
+                          .pushNamed(EditProductScreen.routeName),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50.0),
+                      ),
+                    )
+                  : Text(''),
         ],
       ),
       drawer: MainDrawer(),

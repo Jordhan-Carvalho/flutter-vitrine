@@ -58,10 +58,13 @@ class LoginScreen extends StatelessWidget {
                             )
                           ],
                         ),
-                        child: Image(
-                          image:
-                              AssetImage('assets/images/logo-branco-menor.png'),
-                          height: 100,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image(
+                            image: AssetImage(
+                                'assets/images/vtn-white-transparent-cut.png'),
+                            height: 80,
+                          ),
                         ),
                       ),
                     ),
