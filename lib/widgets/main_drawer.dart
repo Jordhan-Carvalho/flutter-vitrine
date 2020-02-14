@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../screens/user_services_screen.dart';
 import '../screens/about_screen.dart';
 import '../screens/user_products_screen.dart';
 import '../providers/auth.dart';
@@ -31,9 +32,10 @@ class MainDrawer extends StatelessWidget {
           AppBar(
             title: Center(
               child: Image(
-                image: AssetImage('assets/images/logo-branco-menor.png'),
-                height: 68,
-                // fit: BoxFit.fill,
+                image:
+                    AssetImage('assets/images/vtn-white-transparent-cut.png'),
+                height: 55,
+                // fit: BoxFit.cover,
               ),
             ),
             automaticallyImplyLeading: false,
@@ -49,6 +51,13 @@ class MainDrawer extends StatelessWidget {
             'Meus produtos',
             () => Navigator.of(context)
                 .pushReplacementNamed(UserProductsScreen.routeName),
+            context,
+          ),
+          _buildItem(
+            Icons.group,
+            'Meus serviços',
+            () => Navigator.of(context)
+                .pushReplacementNamed(UserServicesScreen.routeName),
             context,
           ),
           _buildItem(

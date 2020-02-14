@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/service.dart';
 import '../widgets/carousel_pro.dart';
 
 class ServiceDetailScreen extends StatelessWidget {
   static const routeName = '/service-detail';
+
+  void _launchURL(String portUrl) async {
+    final url = portUrl;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Falha em abrir $url';
+    }
+  }
 
   Widget _buildImages(Service service) {
     List<FadeInImage> images = [];
@@ -61,7 +71,6 @@ class ServiceDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final service = ModalRoute.of(context).settings.arguments as Service;
     final mediaQuery = MediaQuery.of(context);
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
@@ -71,7 +80,7 @@ class ServiceDetailScreen extends StatelessWidget {
         ),
         onPressed: () {
           FlutterOpenWhatsapp.sendSingleMessage("55${service.telNumber}",
-              "Olá ${service.title}, te achei no Vitrine Virtual e estou interessado na sua prestação de serviço... está disponível?");
+              "Olá ${service.title}, te achei no Vitrine Virtual e estou interessado(a) na sua prestação de serviço... está disponível?");
         },
       ),
       body: CustomScrollView(
@@ -138,11 +147,24 @@ class ServiceDetailScreen extends StatelessWidget {
                       },
                     ),
                     mediaQuery,
-                  )
+                  ),
+                  if (service.portfolio != '' && service.portfolio != null)
+                    RaisedButton.icon(
+                      onPressed: () => _launchURL(service.portfolio),
+                      icon: Icon(
+                        Icons.work,
+                      ),
+                      label: Text('Portfólio'),
+                      textColor: Colors.white,
+                      color: Theme.of(context).primaryColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.white)),
+                    ),
                 ],
               ),
               SizedBox(
-                height: 50,
+                height: 100,
               )
             ]),
           ),

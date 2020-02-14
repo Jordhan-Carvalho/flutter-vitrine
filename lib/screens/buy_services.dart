@@ -12,6 +12,7 @@ class BuyServices extends StatelessWidget {
 
   final List<String> benefitsPremium = [
     'Até 2x mais visualizações',
+    'Link para site/portfólio externo',
     'Banner no anúncio',
     'Prioridade na ordem de visualização',
     'Até 4 imagens para exibição',
@@ -39,12 +40,15 @@ class BuyServices extends StatelessWidget {
     subcategory: "Acadêmicos",
     imagesUrl: [
       "https://img.olx.com.br/images/20/202912034932897.jpg",
-      "https://www.aulasintelectu.com.br/imagens/aulas-particular-de-ingles-precos-no-jardim-sao-paulo.jpg"
+      "https://www.aulasintelectu.com.br/imagens/aulas-particular-de-ingles-precos-no-jardim-sao-paulo.jpg",
+      "https://www.b-lab.us/wp-content/uploads/2019/07/imagem-4.jpg",
+      "https://abrilexame.files.wordpress.com/2017/01/ryan-mcvay.jpg"
     ],
     id: "idTeste",
     ownerId: "ownerTest",
     city: City.Barreiras,
     createdOn: DateTime.now(),
+    portfolio: 'https://fik.com.br',
   );
   final Service serviceBasic = Service(
     category: "Aulas",
@@ -70,6 +74,7 @@ class BuyServices extends StatelessWidget {
     ownerId: "ownerTest",
     city: City.Barreiras,
     createdOn: DateTime.now(),
+    // portfolio: '',
   );
 
   @override
@@ -100,25 +105,6 @@ class BuyServices extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
-                  "Plano Mensal Premium R\$50.00",
-                  style: Theme.of(context).textTheme.title,
-                )),
-            Text(
-              "*10% de desconto no plano anual (R\$ 45.00)",
-              style: TextStyle(color: Colors.grey),
-            ),
-            BenefitsItem(benefitsPremium),
-            Padding(
-              padding: const EdgeInsets.only(right: 300.0),
-              child: Text(
-                "Exemplo",
-                style: TextStyle(color: Colors.grey),
-              ),
-            ),
-            ServiceItem(service: service),
-            Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
                   "Plano Mensal Básico R\$25.00",
                   style: Theme.of(context).textTheme.title,
                 )),
@@ -135,6 +121,25 @@ class BuyServices extends StatelessWidget {
               ),
             ),
             ServiceItem(service: serviceBasic),
+            Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  "Plano Mensal Premium R\$50.00",
+                  style: Theme.of(context).textTheme.title,
+                )),
+            Text(
+              "*10% de desconto no plano anual (R\$ 45.00)",
+              style: TextStyle(color: Colors.grey),
+            ),
+            BenefitsItem(benefitsPremium),
+            Padding(
+              padding: const EdgeInsets.only(right: 300.0),
+              child: Text(
+                "Exemplo",
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+            ServiceItem(service: service),
             SizedBox(
               height: 30,
             ),
@@ -147,6 +152,9 @@ class BuyServices extends StatelessWidget {
               icon: Icon(MdiIcons.whatsapp),
               label: Text("Entrar em contato"),
               textColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(18.0),
+                  side: BorderSide(color: Colors.white)),
             ),
             SizedBox(
               height: 150,

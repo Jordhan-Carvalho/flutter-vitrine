@@ -10,12 +10,13 @@ class ThemeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
-      color: Theme.of(context).primaryColorLight,
+      color: Theme.of(context).primaryColor,
       child: content,
       shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(18.0),
           side: BorderSide(color: Colors.white)),
       onPressed: handlePress,
+      textColor: Colors.white,
     );
   }
 }
