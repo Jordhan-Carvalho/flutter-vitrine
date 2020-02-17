@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../providers/products.dart';
 import '../widgets/product_item.dart';
 import '../models/product.dart';
+import '../screens/edit_product_screen.dart';
 
 class ProdOverview extends StatefulWidget {
   final String category;
@@ -276,6 +277,19 @@ class _ProdOverviewState extends State<ProdOverview>
       return Scaffold(
         appBar: AppBar(
           title: Text(widget.category),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                '\$ Vender',
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(EditProductScreen.routeName),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50.0),
+              ),
+            )
+          ],
         ),
         body: _buildBody(cat: true),
       );

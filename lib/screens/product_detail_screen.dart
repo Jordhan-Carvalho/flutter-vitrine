@@ -11,18 +11,32 @@ import '../widgets/theme_button.dart';
 import '../widgets/favorite_button.dart';
 import '../providers/products.dart';
 import '../widgets/carousel_pro.dart';
+import '../widgets/custom_sliverappbar.dart';
 
-class ProductDetailScreen extends StatelessWidget {
-  const ProductDetailScreen({Key key}) : super(key: key);
+class ProductDetailScreen extends StatefulWidget {
+  ProductDetailScreen({Key key}) : super(key: key);
   static final routeName = '/product-detail';
+
+  @override
+  _ProductDetailScreenState createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  var currImgIndex = 0;
+
+  void _changeContainerSize(int currentImageIndex) {
+    setState(() {
+      currImgIndex = currentImageIndex;
+    });
+  }
 
   Widget _buildImages(Product prod) {
     List<FadeInImage> images = [];
     for (var image in prod.imageUrl) {
       images.add(FadeInImage(
-        placeholder: AssetImage('assets/images/FEDTpyE.gif'),
+        placeholder: const AssetImage('assets/images/FEDTpyE.gif'),
         image: NetworkImage(image),
-        fit: BoxFit.cover,
+        fit: BoxFit.fitWidth,
       ));
     }
 
@@ -31,8 +45,11 @@ class ProductDetailScreen extends StatelessWidget {
       dotSize: 3.0,
       dotSpacing: 10,
       indicatorBgPadding: 5,
-      autoplayDuration: Duration(seconds: 7),
+      autoplayDuration: Duration(seconds: 8),
+      // autoplay: false,
       borderRadius: false,
+      boxFit: BoxFit.fill,
+      onImageChange: (prevImgIndex, curIndex) => _changeContainerSize(curIndex),
     );
   }
 
@@ -44,10 +61,10 @@ class ProductDetailScreen extends StatelessWidget {
       body: CustomScrollView(
         // slivers = scrollable areas of the screen
         slivers: <Widget>[
-          SliverAppBar(
-            expandedHeight: 400,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
+          CustomSliverAppBar(
+            imagesUrls: prod.imageUrl,
+            imgIndex: currImgIndex,
+            passFlexibleSpace: FlexibleSpaceBar(
               title: DecoratedBox(
                 // position: DecorationPosition.foreground,
                 decoration: BoxDecoration(
@@ -62,6 +79,24 @@ class ProductDetailScreen extends StatelessWidget {
               ),
             ),
           ),
+          // SliverAppBar(
+          //   expandedHeight: 450,
+          //   pinned: true,
+          //   flexibleSpace: FlexibleSpaceBar(
+          //     title: DecoratedBox(
+          //       // position: DecorationPosition.foreground,
+          //       decoration: BoxDecoration(
+          //         color: Colors.black38,
+          //         borderRadius: BorderRadius.circular(5),
+          //       ),
+          //       child: Text(prod.title),
+          //     ),
+          //     background: Hero(
+          //       tag: prod.id,
+          //       child: _buildImages(prod),
+          //     ),
+          //   ),
+          // ),
           SliverList(
             delegate: SliverChildListDelegate([
               Card(
@@ -75,7 +110,7 @@ class ProductDetailScreen extends StatelessWidget {
                           backgroundColor: Colors.transparent,
                           avatar: CircleAvatar(
                             backgroundColor: Theme.of(context).primaryColor,
-                            child: Text('R\$'),
+                            child: const Text('R\$'),
                           ),
                           label: Text(
                               '${NumberFormat("#,##0.00", "pt_BR").format(prod.price / 100).toString()}'),
@@ -102,7 +137,7 @@ class ProductDetailScreen extends StatelessWidget {
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
-                          label: Text(DateFormat('yMMMd', 'pt-BR')
+                          label: Text(DateFormat('d/MM/y', 'pt-BR')
                               .format(prod.createdOn)),
                         ),
                       ],
@@ -146,7 +181,7 @@ class ProductDetailScreen extends StatelessWidget {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
-                        child: Text(
+                        child: const Text(
                           'Vendido por:',
                           style: TextStyle(fontStyle: FontStyle.italic),
                         ),
@@ -185,13 +220,13 @@ class ProductDetailScreen extends StatelessWidget {
                       'Descrição',
                       style: Theme.of(context).textTheme.title,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     Expanded(
                       child: SingleChildScrollView(
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
                           width: double.infinity,
                           child: Text(
                             prod.description,
@@ -204,7 +239,7 @@ class ProductDetailScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Row(
@@ -216,8 +251,8 @@ class ProductDetailScreen extends StatelessWidget {
                   ThemeButton(
                     content: Row(
                       children: <Widget>[
-                        Text('Mensagem'),
-                        Icon(MdiIcons.whatsapp),
+                        const Text('Mensagem'),
+                        const Icon(MdiIcons.whatsapp),
                       ],
                     ),
                     handlePress: () {
@@ -228,11 +263,11 @@ class ProductDetailScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Report(prod: prod),
-              SizedBox(
+              const SizedBox(
                 height: 250,
               ),
             ]),
@@ -258,18 +293,18 @@ class Report extends StatelessWidget {
     return showDialog(
         context: ctx,
         builder: (context) => AlertDialog(
-              title: Text('Atenção!! Reportar produto?'),
-              content: Text(
+              title: const Text('Atenção!! Reportar produto?'),
+              content: const Text(
                   'Só prossiga em caso de indisponibilidade ou quebra das regras, ações de má fé podem levar a suspensão de sua conta'),
               actions: <Widget>[
                 FlatButton(
-                  child: Text('Sim'),
+                  child: const Text('Sim'),
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
                 ),
                 FlatButton(
-                  child: Text('Não'),
+                  child: const Text('Não'),
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
@@ -287,14 +322,14 @@ class Report extends StatelessWidget {
       Scaffold.of(ctx)
         ..removeCurrentSnackBar()
         ..showSnackBar(SnackBar(
-          content: Text('Reportado com sucesso'),
+          content: const Text('Reportado com sucesso'),
           duration: Duration(milliseconds: 2000),
         ));
     } catch (e) {
       Scaffold.of(ctx)
         ..removeCurrentSnackBar()
         ..showSnackBar(SnackBar(
-          content: Text('Falha em reportar'),
+          content: const Text('Falha em reportar'),
           duration: Duration(milliseconds: 2000),
         ));
     }
@@ -312,7 +347,7 @@ class Report extends StatelessWidget {
             children: <Widget>[
               IconButton(
                 color: Colors.amber,
-                icon: Icon(
+                icon: const Icon(
                   Icons.flag,
                   color: Colors.red,
                   size: 20,
@@ -320,7 +355,7 @@ class Report extends StatelessWidget {
                 tooltip: 'Reportar',
                 onPressed: () => _reportProd(prod.id, context),
               ),
-              Text(
+              const Text(
                 'Reportar',
                 style: TextStyle(
                   fontSize: 12,

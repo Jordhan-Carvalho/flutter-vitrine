@@ -78,8 +78,8 @@ class Products with ChangeNotifier {
         .toList();
   }
 
-  Product findById(String id) {
-    return items.firstWhere((prod) => prod.id == id);
+  Product findUserProdById(String id) {
+    return userItems.firstWhere((prod) => prod.id == id);
   }
 
   Future<void> addProduct(Product prod, DateTime timeCreated) async {
