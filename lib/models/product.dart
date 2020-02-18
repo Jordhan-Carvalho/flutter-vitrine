@@ -61,8 +61,8 @@ class Product {
         "Compra e venda",
       ],
       "Veiculos e Peças": [
-        '4 rodas',
-        '2 rodas',
+        'Carros',
+        'Motos',
         'Aquático',
         'Peças',
       ],
@@ -76,7 +76,7 @@ class Product {
         "Informática",
         "Games",
         "TV",
-        "Eletrônicos Áudio & Vídeo",
+        "Eletrônicos Áudio e Vídeo",
       ],
       "Para casa": [
         "Eletrodomésticos",

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import './buy_services.dart';
 import './about_screen.dart';
 import './services_screen.dart';
-import './market_screen.dart';
 import './edit_product_screen.dart';
 import './favorites_screen.dart';
 import './categories_screen.dart';
@@ -43,7 +42,6 @@ class _NavTabsState extends State<NavTabs> {
         'title': 'Vitrine'
       },
       {'page': CategoriesScreen(), 'title': 'Categorias'},
-      {'page': MarketScreen(), 'title': 'Lojas'},
       {'page': ServicesScreen(), 'title': 'Serviços'},
       {'page': FavoritesScreen(), 'title': 'Favoritos'},
     ];
@@ -236,7 +234,7 @@ class _NavTabsState extends State<NavTabs> {
                 ),
               ],
             ),
-          _selectedPageIndex == 3
+          _selectedPageIndex == 2
               ? FlatButton.icon(
                   textColor: Colors.white,
                   onPressed: () =>
@@ -284,10 +282,6 @@ class _NavTabsState extends State<NavTabs> {
           BottomNavigationBarItem(
             icon: Icon(Icons.category),
             title: Text('Categorias'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.store),
-            title: Text('Lojas'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.supervisor_account),

@@ -92,7 +92,16 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product prod, DateTime timeCreated) async {
-    final prodSearchTerms = KeywordGenerator.searchTerms(prod.title);
+    final titleSearchTerm = KeywordGenerator.searchTerms(prod.title);
+    final subcatSearchTerm = KeywordGenerator.searchTerms(prod.subcategory);
+    final descSearchTerm =
+        KeywordGenerator.searchTerms(prod.description.substring(0, 25));
+
+    final prodSearchTerms = [
+      ...titleSearchTerm,
+      ...subcatSearchTerm,
+      ...descSearchTerm,
+    ].toSet().toList();
 
     try {
       DocumentReference resp = await _firestore.collection('products').add({
@@ -572,7 +581,11 @@ class Products with ChangeNotifier {
     bool refresh = false,
   }) async {
     QuerySnapshot querySnapshot;
-    print(' valor que entro $searchedProd');
+
+    final noSpaceSearch = searchedProd
+        .replaceAll(new RegExp(r'[^A-Za-z0-9éêáàãâíóôõúç]'), "")
+        .trim();
+
     try {
       if (!hasMore && !refresh) {
         print('No More Products');
@@ -582,7 +595,7 @@ class Products with ChangeNotifier {
         querySnapshot = await _firestore
             .collection('products')
             .where('approved', isEqualTo: true)
-            .where("searchTerms", arrayContains: searchedProd)
+            .where("searchTerms", arrayContains: noSpaceSearch)
             .orderBy("createdOn", descending: true)
             .limit(10)
             .getDocuments();
@@ -590,7 +603,7 @@ class Products with ChangeNotifier {
         querySnapshot = await _firestore
             .collection('products')
             .where('approved', isEqualTo: true)
-            .where("searchTerms", arrayContains: searchedProd)
+            .where("searchTerms", arrayContains: noSpaceSearch)
             .orderBy("createdOn", descending: true)
             .startAfterDocument(lastDocument)
             .limit(10)

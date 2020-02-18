@@ -4,8 +4,11 @@ class KeywordGenerator {
     var currentTerm = "", letterArr = searchTerm.split('');
     letterArr.forEach((letter) {
       currentTerm += letter;
+
       if (currentTerm.length > 2) {
-        searchKeywords.add(currentTerm);
+        searchKeywords.add(currentTerm
+            .replaceAll(new RegExp(r'[^A-Za-z0-9éêáàãâíóôõúç]'), "")
+            .trim());
       }
     });
     return searchKeywords;
