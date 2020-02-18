@@ -39,6 +39,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     condition: Condition.Usado,
     imageUrl: [],
     category: null,
+    subcategory: null,
     delivery: false,
     tradable: false,
   );
@@ -72,6 +73,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
         ..removeCurrentSnackBar()
         ..showSnackBar(SnackBar(
           content: Text('Selecione uma categoria !'),
+          duration: Duration(milliseconds: 2000),
+        ));
+      return false;
+    } else if (_editedProd.subcategory == null) {
+      Scaffold.of(ctx)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text('Selecione uma subcategoria !'),
           duration: Duration(milliseconds: 2000),
         ));
       return false;
@@ -340,6 +349,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                               tradable: _editedProd.tradable,
                                               telNumber: _editedProd.telNumber,
                                               category: _editedProd.category,
+                                              subcategory:
+                                                  _editedProd.subcategory,
                                               delivery: _editedProd.delivery,
                                               condition: _editedProd.condition,
                                               id: _editedProd.id,
@@ -444,9 +455,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                           onChanged: (String newValue) {
                                             setState(() {
                                               _editedProd.category = newValue;
+                                              _editedProd.subcategory = null;
                                             });
                                           },
-                                          items: Product.loadCategories
+                                          items: Product.loadCategories.keys
+                                              .toList()
                                               .map<DropdownMenuItem<String>>(
                                                   (String value) {
                                             return DropdownMenuItem<String>(
@@ -461,6 +474,36 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       ),
                                     ],
                                   ),
+                                  if (_editedProd.category != null &&
+                                      _editedProd.category != '')
+                                    DropdownButton<String>(
+                                      value: _editedProd.subcategory,
+                                      icon: Icon(Icons.arrow_downward),
+                                      iconSize: 20,
+                                      elevation: 16,
+                                      hint: Text('Subcategorias'),
+                                      iconEnabledColor:
+                                          Theme.of(context).primaryColor,
+                                      isExpanded: true,
+                                      // isDense: true,
+                                      onChanged: (String newValue) {
+                                        setState(() {
+                                          _editedProd.subcategory = newValue;
+                                        });
+                                      },
+                                      items: Product
+                                          .loadCategories[_editedProd.category]
+                                          .map<DropdownMenuItem<String>>(
+                                              (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(
+                                            value,
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
                                   TextFormField(
                                     initialValue: _editedProd.description,
                                     decoration:
@@ -481,6 +524,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                         tradable: _editedProd.tradable,
                                         telNumber: _editedProd.telNumber,
                                         category: _editedProd.category,
+                                        subcategory: _editedProd.subcategory,
                                         delivery: _editedProd.delivery,
                                         condition: _editedProd.condition,
                                         id: _editedProd.id,

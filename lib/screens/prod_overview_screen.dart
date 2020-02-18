@@ -34,9 +34,10 @@ class _ProdOverviewState extends State<ProdOverview>
   bool _hasMore = true;
   bool _hasMoreSearch = true;
   bool _isLoading = false;
-
   DocumentSnapshot _lastDocument;
   DocumentSnapshot _lastSearchDocument;
+  String dropdownValue = 'Todos';
+  List<String> subcategories = ['Todos'];
 
   @override
   bool get wantKeepAlive => true;
@@ -46,6 +47,12 @@ class _ProdOverviewState extends State<ProdOverview>
     super.initState();
 
     print('init  ${widget.showTradable}');
+    if (widget.category != null && widget.category != '') {
+      subcategories = [
+        ...subcategories,
+        ...Product.loadCategories[widget.category]
+      ];
+    }
 
     _fetchProducts(refresh: true);
 
@@ -66,9 +73,10 @@ class _ProdOverviewState extends State<ProdOverview>
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       _fetchProducts();
-      double newPos = _scrollController.position.pixels - 50;
-      _scrollController.position
-          .moveTo(newPos, duration: Duration(milliseconds: 1500));
+      //Animation
+      // double newPos = _scrollController.position.pixels - 50;
+      // _scrollController.position
+      //     .moveTo(newPos, duration: Duration(milliseconds: 1500));
     }
   }
 
@@ -90,7 +98,17 @@ class _ProdOverviewState extends State<ProdOverview>
   }
 
   Future<void> _fetchProducts({refresh = false}) async {
-    if (widget.category != null) {
+    if (widget.category != null && dropdownValue != 'Todos') {
+      await Provider.of<Products>(context, listen: false).fetchSubcategory(
+        dropdownValue,
+        refresh: refresh,
+        hasMore: _hasMore,
+        hasMoreCallback: _hasMoreCallback,
+        lastDocumentCallback: _lastDocCallback,
+        lastDocument: refresh ? null : _lastDocument,
+      );
+      print('has more subcat $_hasMore');
+    } else if (widget.category != null) {
       await Provider.of<Products>(context, listen: false).fetchCategory(
         widget.category,
         refresh: refresh,
@@ -99,6 +117,7 @@ class _ProdOverviewState extends State<ProdOverview>
         lastDocumentCallback: _lastDocCallback,
         lastDocument: refresh ? null : _lastDocument,
       );
+      print('has more cat $_hasMore');
     } else if (widget.searchTerm != null &&
         widget.searchTerm != "" &&
         widget.searchTerm != " ") {
@@ -212,10 +231,17 @@ class _ProdOverviewState extends State<ProdOverview>
                 if (_hasMore == true) {
                   _fetchProducts();
                 }
-              } else if (cat == true) {
+              } else if (cat == true && dropdownValue == 'Todos') {
+                print('categoria');
                 newProdData = productData.categoryItems;
+              } else if (cat == true && dropdownValue != 'Todos') {
+                newProdData = productData.subcategoryItems;
+                if (_hasMore == true) {
+                  // _fetchProducts();
+                }
               } else {
                 newProdData = productData.items;
+                //2020-02-14T17:21:02.598648
               }
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 1),
@@ -226,6 +252,49 @@ class _ProdOverviewState extends State<ProdOverview>
                     : CustomScrollView(
                         controller: _scrollController,
                         slivers: <Widget>[
+                          if (cat)
+                            SliverFixedExtentList(
+                              itemExtent: 50,
+                              delegate: SliverChildListDelegate([
+                                Container(
+                                  height: 150,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        'Filtro: ',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      DropdownButton<String>(
+                                        value: dropdownValue,
+                                        onChanged: (String newValue) {
+                                          setState(() {
+                                            dropdownValue = newValue;
+                                          });
+                                          _fetchProducts(refresh: true);
+                                        },
+                                        items: subcategories
+                                            .map<DropdownMenuItem<String>>(
+                                                (String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ]),
+                            ),
                           SliverPadding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 2),
@@ -248,14 +317,13 @@ class _ProdOverviewState extends State<ProdOverview>
                             ),
                           ),
                           SliverToBoxAdapter(
-                            child:
-                                (cat && productData.categoryItems.length < 10)
-                                    ? SizedBox()
-                                    : Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Center(
-                                            child: CircularProgressIndicator()),
-                                      ),
+                            child: (_hasMore == false)
+                                ? SizedBox()
+                                : Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Center(
+                                        child: CircularProgressIndicator()),
+                                  ),
                           ),
                         ],
                       ),
@@ -272,7 +340,6 @@ class _ProdOverviewState extends State<ProdOverview>
       return _buildSearch();
     }
 
-    print(widget.searchTerm);
     if (widget.category != null) {
       return Scaffold(
         appBar: AppBar(

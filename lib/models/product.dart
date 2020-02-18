@@ -26,6 +26,7 @@ class Product {
   bool delivery;
   bool tradable;
   String category;
+  String subcategory;
   List<String> imageUrl;
   int telNumber;
   final City city;
@@ -50,17 +51,52 @@ class Product {
     this.ownerName,
     this.searchTerms,
     this.approved,
+    @required this.subcategory,
   });
 
-  static List<String> get loadCategories {
-    return [
-      "Imóveis",
-      "Veiculos e Peças",
-      "Moda e Beleza",
-      "Eletrônicos e Celulares",
-      "Para casa",
-      "Esporte e Lazer",
-      "Livros, Brinquedos e Variados"
-    ];
+  static Map<String, List<String>> get loadCategories {
+    return {
+      "Imóveis": [
+        "Aluguel",
+        "Compra e venda",
+      ],
+      "Veiculos e Peças": [
+        '4 rodas',
+        '2 rodas',
+        'Aquático',
+        'Peças',
+      ],
+      "Moda e Beleza": [
+        "Vestuário",
+        "Beleza e cuidado pessoal",
+        "Acessórios",
+      ],
+      "Eletrônicos e Celulares": [
+        "Celulares",
+        "Informática",
+        "Games",
+        "TV",
+        "Eletrônicos Áudio & Vídeo",
+      ],
+      "Para casa": [
+        "Eletrodomésticos",
+        "Cama Mesa e Banho",
+        "Móveis",
+        "Utilidades domésticas",
+        "Jardins e Exteriores",
+      ],
+      "Esporte e Lazer": [
+        "Fitness e Musculação",
+        "Camping, Caça e Pesca",
+        "Esporte em equipe",
+        "Esporte individual",
+        "Hobbie",
+      ],
+      "Livros, Brinquedos e Variados": [
+        "Livros, Revistas e Comics",
+        "Brinquedos",
+        "Variados",
+      ],
+    };
   }
 }

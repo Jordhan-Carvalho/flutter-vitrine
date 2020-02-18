@@ -15,6 +15,7 @@ class Products with ChangeNotifier {
   List<Product> _categoryItems = [];
   List<Product> _userItems = [];
   List<Product> _searchedItems = [];
+  List<Product> _subcategoryItems = [];
 
   String _authToken;
   String _userId;
@@ -48,12 +49,20 @@ class Products with ChangeNotifier {
     return _items.where((prod) => prod.delivery && prod.tradable).toList();
   }
 
+  // List<Product> filterBySubcategory(String subcat) {
+  //   return _categoryItems.where((prod) => prod.subcategory == subcat).toList();
+  // }
+
   List<Product> get favoriteItems {
     return [..._favItems];
   }
 
   List<Product> get categoryItems {
     return [..._categoryItems];
+  }
+
+  List<Product> get subcategoryItems {
+    return [..._subcategoryItems];
   }
 
   List<Product> get userItems {
@@ -89,6 +98,7 @@ class Products with ChangeNotifier {
       DocumentReference resp = await _firestore.collection('products').add({
         "title": prod.title,
         "category": prod.category,
+        "subcategory": prod.subcategory,
         "city": "Barreiras",
         "condition": prod.condition == Condition.Usado ? "Usado" : "Novo",
         "createdOn": timeCreated.toIso8601String(),
@@ -110,6 +120,7 @@ class Products with ChangeNotifier {
               id: resp.documentID,
               title: prod.title,
               category: prod.category,
+              subcategory: prod.subcategory,
               city: prod.city,
               condition: prod.condition,
               createdOn: timeCreated,
@@ -186,6 +197,7 @@ class Products with ChangeNotifier {
               ? Condition.Usado
               : Condition.Novo,
           category: item.data['category'],
+          subcategory: item.data['subcategory'],
           delivery: item.data['delivery'],
           description: item.data['description'],
           price: item.data['price'],
@@ -225,6 +237,7 @@ class Products with ChangeNotifier {
           "title": newProd.title,
           "condition": newProd.condition == Condition.Usado ? "Usado" : "Novo",
           "category": newProd.category,
+          "subcategory": newProd.subcategory,
           "delivery": newProd.delivery,
           "description": newProd.description,
           "price": newProd.price,
@@ -238,7 +251,23 @@ class Products with ChangeNotifier {
         throw e;
       }
     } else {
-      print('...');
+      try {
+        await _firestore.collection('products').document(id).updateData({
+          "title": newProd.title,
+          "condition": newProd.condition == Condition.Usado ? "Usado" : "Novo",
+          "category": newProd.category,
+          "subcategory": newProd.subcategory,
+          "delivery": newProd.delivery,
+          "description": newProd.description,
+          "price": newProd.price,
+          "telNumber": newProd.telNumber,
+          "tradable": newProd.tradable,
+          "searchTerms": prodSearchTerm,
+        });
+        notifyListeners();
+      } catch (e) {
+        throw e;
+      }
     }
   }
 
@@ -288,6 +317,7 @@ class Products with ChangeNotifier {
               ? Condition.Usado
               : Condition.Novo,
           category: item.data['category'],
+          subcategory: item.data['subcategory'],
           delivery: item.data['delivery'],
           description: item.data['description'],
           price: item.data['price'],
@@ -320,6 +350,7 @@ class Products with ChangeNotifier {
         "telNumber": prod.telNumber,
         "condition": prod.condition == Condition.Usado ? "Usado" : "Novo",
         "category": prod.category,
+        "subcategory": prod.subcategory,
         "delivery": prod.delivery,
         "description": prod.description,
         "price": prod.price,
@@ -420,6 +451,7 @@ class Products with ChangeNotifier {
               ? Condition.Usado
               : Condition.Novo,
           category: item.data['category'],
+          subcategory: item.data['subcategory'],
           delivery: item.data['delivery'],
           description: item.data['description'],
           price: item.data['price'],
@@ -437,6 +469,91 @@ class Products with ChangeNotifier {
         _categoryItems = categoryProds;
       } else {
         _categoryItems.addAll(categoryProds);
+      }
+
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  Future<void> fetchSubcategory(
+    String subcategory, {
+    bool filterByUser = false,
+    bool hasMore,
+    Function hasMoreCallback,
+    DocumentSnapshot lastDocument,
+    Function lastDocumentCallback,
+    bool refresh = false,
+  }) async {
+    QuerySnapshot querySnapshot;
+    try {
+      if (!hasMore && !refresh) {
+        print('No More Products');
+        return;
+      }
+      if (lastDocument == null) {
+        querySnapshot = await _firestore
+            .collection('products')
+            .where('subcategory', isEqualTo: subcategory)
+            .where('approved', isEqualTo: true)
+            .orderBy("createdOn", descending: true)
+            .limit(10)
+            .getDocuments();
+      } else {
+        querySnapshot = await _firestore
+            .collection('products')
+            .where('subcategory', isEqualTo: subcategory)
+            .where('approved', isEqualTo: true)
+            .orderBy("createdOn", descending: true)
+            .startAfterDocument(lastDocument)
+            .limit(10)
+            .getDocuments();
+      }
+      print('querysnapshot ${querySnapshot.documents.length}');
+      if (querySnapshot.documents.length < 10) {
+        hasMore = false;
+        hasMoreCallback(hasMore);
+      }
+      if (querySnapshot.documents.length == 10) {
+        hasMore = true;
+        hasMoreCallback(hasMore);
+      }
+      if (querySnapshot.documents.length != 0) {
+        lastDocumentCallback(
+            querySnapshot.documents[querySnapshot.documents.length - 1]);
+      }
+
+      print(querySnapshot.documents.length);
+
+      var subcategoryProds = <Product>[];
+
+      querySnapshot.documents.forEach((item) {
+        subcategoryProds.add(Product(
+          id: item.documentID,
+          condition: item.data['condition'] == "Usado"
+              ? Condition.Usado
+              : Condition.Novo,
+          category: item.data['category'],
+          subcategory: item.data['subcategory'],
+          delivery: item.data['delivery'],
+          description: item.data['description'],
+          price: item.data['price'],
+          telNumber: item.data['telNumber'],
+          title: item.data['title'],
+          tradable: item.data['tradable'],
+          city: item.data['city'] == "Barreiras" ? City.Barreiras : City.LEM,
+          createdOn: DateTime.parse(item.data['createdOn']),
+          imageUrl: item.data['imageUrl'].cast<String>(),
+          ownerName: item.data['ownerName'],
+        ));
+      });
+
+      if (refresh) {
+        _subcategoryItems = subcategoryProds;
+      } else {
+        _subcategoryItems.addAll(subcategoryProds);
       }
 
       notifyListeners();
@@ -504,6 +621,7 @@ class Products with ChangeNotifier {
               ? Condition.Usado
               : Condition.Novo,
           category: item.data['category'],
+          subcategory: item.data['subcategory'],
           delivery: item.data['delivery'],
           description: item.data['description'],
           price: item.data['price'],

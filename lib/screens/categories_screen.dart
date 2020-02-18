@@ -6,7 +6,7 @@ import '../models/product.dart';
 class CategoriesScreen extends StatelessWidget {
   CategoriesScreen({Key key}) : super(key: key);
 
-  final List<String> categories = Product.loadCategories;
+  final List<String> categories = Product.loadCategories.keys.toList();
 
   @override
   Widget build(BuildContext context) {
