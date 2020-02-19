@@ -5,16 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 class Auth with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
+  final fbLogin = new FacebookLogin();
 
   String _token;
   DateTime _expiryDate;
   String _userId;
   Timer _authTimer;
   String _userName;
+  String _provider;
 
   // String get token
   bool isAuthenti;
@@ -72,6 +75,7 @@ class Auth with ChangeNotifier {
       _token = userData.token;
       _userId = currentUser.uid;
       _expiryDate = userData.expirationTime;
+      _provider = 'google';
 
       // _autoLogout();
       notifyListeners();
@@ -83,6 +87,7 @@ class Auth with ChangeNotifier {
         'userId': _userId,
         'expiryDate': _expiryDate.toIso8601String(),
         'userName': _userName,
+        'provider': _provider
       });
       prefs.setString('userPref', userPref);
     } catch (e) {
@@ -104,6 +109,7 @@ class Auth with ChangeNotifier {
       _token = extractedUserData['token'];
       _userId = extractedUserData['userId'];
       _userName = extractedUserData['userName'];
+      _provider = extractedUserData['provider'];
       _expiryDate = expiryDate;
       notifyListeners();
       // if (expiryDate.isAfter(DateTime.now())) {
@@ -118,6 +124,8 @@ class Auth with ChangeNotifier {
   }
 
   void logout() async {
+    Map<String, Object> extractedUserData;
+
     _token = null;
     _userId = null;
     _expiryDate = null;
@@ -125,9 +133,21 @@ class Auth with ChangeNotifier {
       _authTimer.cancel();
       _authTimer = null;
     }
-    await googleSignIn.signOut();
-    notifyListeners();
+    await _auth.signOut();
     final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('userPref')) {
+      extractedUserData =
+          json.decode(prefs.getString('userPref')) as Map<String, Object>;
+
+      _provider = extractedUserData['provider'];
+      if (_provider == 'google') {
+        await googleSignIn.signOut();
+      } else {
+        await fbLogin.logOut();
+      }
+      _provider = null;
+    }
+    notifyListeners();
     // prefs.remove('userData');
     prefs.clear();
   }
@@ -140,4 +160,57 @@ class Auth with ChangeNotifier {
   //   final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
   //   _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   // }
+
+  Future<void> signInWithFacebook() async {
+    FirebaseUser currentUser;
+    try {
+      final FacebookLoginResult result =
+          await fbLogin.logIn(['email', 'public_profile']);
+
+      switch (result.status) {
+        case FacebookLoginStatus.loggedIn:
+          final AuthCredential credential = FacebookAuthProvider.getCredential(
+              accessToken: result.accessToken.token);
+          final AuthResult authResult =
+              await _auth.signInWithCredential(credential);
+          final FirebaseUser user = authResult.user;
+          print(user.displayName);
+
+          assert(user.displayName != null);
+          assert(!user.isAnonymous);
+          assert(await user.getIdToken() != null);
+          currentUser = await _auth.currentUser();
+          assert(user.uid == currentUser.uid);
+
+          _userName = user.displayName;
+          _token = result.accessToken.token;
+          _userId = currentUser.uid;
+          _expiryDate = result.accessToken.expires;
+          _provider = 'facebook';
+
+          notifyListeners();
+
+          final prefs = await SharedPreferences.getInstance();
+          final userPref = json.encode({
+            'token': _token,
+            'userId': _userId,
+            'expiryDate': _expiryDate.toIso8601String(),
+            'userName': _userName,
+            'provider': _provider
+          });
+          prefs.setString('userPref', userPref);
+
+          break;
+        case FacebookLoginStatus.cancelledByUser:
+          print('canceled');
+          break;
+        case FacebookLoginStatus.error:
+          print('Switch error');
+          break;
+      }
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
 }

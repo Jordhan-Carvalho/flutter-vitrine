@@ -14,7 +14,7 @@ class AuthCard extends StatefulWidget {
 class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
 
-  void signInWithGoogle() async {
+  void _signInWithGoogle() async {
     setState(() {
       _isLoading = true;
     });
@@ -28,6 +28,27 @@ class _AuthCardState extends State<AuthCard> {
         _isLoading = false;
       });
     }
+  }
+
+  void _signInWithFacebook() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await Provider.of<Auth>(context, listen: false).signInWithFacebook();
+    } catch (e) {
+      print(e);
+      Scaffold.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text('E-mail já esta sendo utilizado'),
+          duration: Duration(milliseconds: 4000),
+        ));
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -72,7 +93,7 @@ class _AuthCardState extends State<AuthCard> {
                           )
                         ],
                       ),
-                      onPressed: signInWithGoogle,
+                      onPressed: _signInWithGoogle,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -108,7 +129,7 @@ class _AuthCardState extends State<AuthCard> {
                           )
                         ],
                       ),
-                      onPressed: () {},
+                      onPressed: _signInWithFacebook,
                       padding:
                           EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
