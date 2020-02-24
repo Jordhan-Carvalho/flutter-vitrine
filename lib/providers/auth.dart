@@ -206,6 +206,8 @@ class Auth with ChangeNotifier {
           break;
         case FacebookLoginStatus.error:
           print('Switch error');
+          print(result.errorMessage);
+          fbLogin.logOut();
           break;
       }
     } catch (e) {

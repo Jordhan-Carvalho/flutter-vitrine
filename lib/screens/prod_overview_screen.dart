@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../helpers/push_notification_service.dart';
 import '../providers/products.dart';
 import '../widgets/product_item.dart';
 import '../models/product.dart';
@@ -45,7 +46,7 @@ class _ProdOverviewState extends State<ProdOverview>
   @override
   void initState() {
     super.initState();
-
+    PushNotificationService(context).initialise();
     print('init  ${widget.showTradable}');
     if (widget.category != null && widget.category != '') {
       subcategories = [
