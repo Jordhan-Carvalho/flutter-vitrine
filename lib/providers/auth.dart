@@ -6,8 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Auth with ChangeNotifier {
+  Firestore _firestore = Firestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final fbLogin = new FacebookLogin();
@@ -18,6 +20,7 @@ class Auth with ChangeNotifier {
   Timer _authTimer;
   String _userName;
   String _provider;
+  bool _userAdmin;
 
   // String get token
   bool isAuthenti;
@@ -70,6 +73,16 @@ class Auth with ChangeNotifier {
       assert(user.uid == currentUser.uid);
 
       final userData = await user.getIdToken(refresh: true);
+      // final DocumentSnapshot userRole = await _firestore
+      //     .collection('administrators')
+      //     .document(currentUser.uid)
+      //     .get();
+
+      // if (userRole.data.length != 0) {
+      //   _userAdmin = true;
+      //   print('user Admin $_userAdmin');
+      // }
+      // print('user admin outside $_userAdmin');
 
       _userName = user.displayName;
       _token = userData.token;

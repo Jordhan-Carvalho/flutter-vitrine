@@ -20,6 +20,7 @@ import './screens/product_detail_screen.dart';
 import './screens/user_products_screen.dart';
 import './screens/nav_tab.dart';
 import './providers/auth.dart';
+import './helpers/push_notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +36,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    PushNotificationService(context).initialise();
     initializeDateFormatting('pt_BR', null);
     return MultiProvider(
       providers: [
