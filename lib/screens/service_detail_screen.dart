@@ -117,6 +117,22 @@ class ServiceDetailScreen extends StatelessWidget {
             delegate: SliverChildListDelegate([
               Column(
                 children: <Widget>[
+                  if (service.portfolio != '' && service.portfolio != null)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RaisedButton.icon(
+                        onPressed: () => _launchURL(service.portfolio),
+                        icon: Icon(
+                          Icons.work,
+                        ),
+                        label: Text('Portfólio'),
+                        textColor: Colors.white,
+                        color: Theme.of(context).primaryColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.white)),
+                      ),
+                    ),
                   _buildSectionTitle("Descrição", context),
                   _buildContainer(
                       Card(
@@ -148,19 +164,6 @@ class ServiceDetailScreen extends StatelessWidget {
                     ),
                     mediaQuery,
                   ),
-                  if (service.portfolio != '' && service.portfolio != null)
-                    RaisedButton.icon(
-                      onPressed: () => _launchURL(service.portfolio),
-                      icon: Icon(
-                        Icons.work,
-                      ),
-                      label: Text('Portfólio'),
-                      textColor: Colors.white,
-                      color: Theme.of(context).primaryColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(18.0),
-                          side: BorderSide(color: Colors.white)),
-                    ),
                 ],
               ),
               SizedBox(
