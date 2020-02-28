@@ -54,6 +54,75 @@ class Auth with ChangeNotifier {
     return _userId;
   }
 
+  Future<void> _firebaseLoginProcess({
+    @required AuthCredential credential,
+    @required String provider,
+    FacebookLoginResult result,
+  }) async {
+    final AuthResult authResult = await _auth.signInWithCredential(credential);
+    final FirebaseUser user = authResult.user;
+    print(user.displayName);
+
+    assert(user.displayName != null);
+    assert(!user.isAnonymous);
+    assert(await user.getIdToken() != null);
+    final FirebaseUser currentUser = await _auth.currentUser();
+    assert(user.uid == currentUser.uid);
+    IdTokenResult userData;
+    if (provider == 'google') {
+      userData = await user.getIdToken(refresh: true);
+    }
+
+    final DocumentSnapshot userRegistered = await _firestore
+        .collection('userSettings')
+        .document(currentUser.uid)
+        .get();
+    if (!userRegistered.exists) {
+      print('registering');
+      await _firestore
+          .collection('userSettings')
+          .document(currentUser.uid)
+          .setData({
+        "id": currentUser.uid,
+        "name": user.displayName,
+        "email": user.email,
+        "provider": provider,
+      });
+    }
+    print('user exists');
+
+    // check if is admin
+    final DocumentSnapshot userRole = await _firestore
+        .collection('administrators')
+        .document(currentUser.uid)
+        .get();
+
+    _userAdmin = userRole.exists;
+    print('user admin $_userAdmin');
+
+    _userName = user.displayName;
+    _token = provider == 'google' ? userData.token : result.accessToken.token;
+    _userId = currentUser.uid;
+    _expiryDate = provider == 'google'
+        ? userData.expirationTime
+        : result.accessToken.expires;
+    _provider = provider;
+
+    // _autoLogout();
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    final userPref = json.encode({
+      'token': _token,
+      'userId': _userId,
+      'expiryDate': _expiryDate.toIso8601String(),
+      'userName': _userName,
+      'provider': _provider,
+      'userAdmin': _userAdmin,
+    });
+    prefs.setString('userPref', userPref);
+  }
+
   Future<void> signInWithGoogle() async {
     try {
       final GoogleSignInAccount googleSignInAccount =
@@ -66,46 +135,37 @@ class Auth with ChangeNotifier {
         idToken: googleSignInAuthentication.idToken,
       );
 
-      final AuthResult authResult =
-          await _auth.signInWithCredential(credential);
-      final FirebaseUser user = authResult.user;
-
-      assert(!user.isAnonymous);
-      assert(await user.getIdToken() != null);
-
-      final FirebaseUser currentUser = await _auth.currentUser();
-      assert(user.uid == currentUser.uid);
-
-      final userData = await user.getIdToken(refresh: true);
-      final DocumentSnapshot userRole = await _firestore
-          .collection('administrators')
-          .document(currentUser.uid)
-          .get();
-
-      _userAdmin = userRole.exists;
-      print('user admin $_userAdmin');
-
-      _userName = user.displayName;
-      _token = userData.token;
-      _userId = currentUser.uid;
-      _expiryDate = userData.expirationTime;
-      _provider = 'google';
-
-      // _autoLogout();
-      notifyListeners();
-
-      //store persistent data on phone
-      final prefs = await SharedPreferences.getInstance();
-      final userPref = json.encode({
-        'token': _token,
-        'userId': _userId,
-        'expiryDate': _expiryDate.toIso8601String(),
-        'userName': _userName,
-        'provider': _provider,
-        'userAdmin': _userAdmin,
-      });
-      prefs.setString('userPref', userPref);
+      _firebaseLoginProcess(credential: credential, provider: 'google');
     } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> signInWithFacebook() async {
+    try {
+      final FacebookLoginResult result =
+          await fbLogin.logIn(['email', 'public_profile']);
+
+      switch (result.status) {
+        case FacebookLoginStatus.loggedIn:
+          final AuthCredential credential = FacebookAuthProvider.getCredential(
+              accessToken: result.accessToken.token);
+
+          _firebaseLoginProcess(
+              credential: credential, provider: 'facebook', result: result);
+
+          break;
+        case FacebookLoginStatus.cancelledByUser:
+          print('canceled');
+          break;
+        case FacebookLoginStatus.error:
+          print('Switch error');
+          print(result.errorMessage);
+          fbLogin.logOut();
+          break;
+      }
+    } catch (e) {
+      print(e);
       throw e;
     }
   }
@@ -178,66 +238,4 @@ class Auth with ChangeNotifier {
   //   _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   // }
 
-  Future<void> signInWithFacebook() async {
-    FirebaseUser currentUser;
-    try {
-      final FacebookLoginResult result =
-          await fbLogin.logIn(['email', 'public_profile']);
-
-      switch (result.status) {
-        case FacebookLoginStatus.loggedIn:
-          final AuthCredential credential = FacebookAuthProvider.getCredential(
-              accessToken: result.accessToken.token);
-          final AuthResult authResult =
-              await _auth.signInWithCredential(credential);
-          final FirebaseUser user = authResult.user;
-          print(user.displayName);
-
-          assert(user.displayName != null);
-          assert(!user.isAnonymous);
-          assert(await user.getIdToken() != null);
-          currentUser = await _auth.currentUser();
-          assert(user.uid == currentUser.uid);
-
-          final DocumentSnapshot userRole = await _firestore
-              .collection('administrators')
-              .document(currentUser.uid)
-              .get();
-
-          _userAdmin = userRole.exists;
-
-          _userName = user.displayName;
-          _token = result.accessToken.token;
-          _userId = currentUser.uid;
-          _expiryDate = result.accessToken.expires;
-          _provider = 'facebook';
-
-          notifyListeners();
-
-          final prefs = await SharedPreferences.getInstance();
-          final userPref = json.encode({
-            'token': _token,
-            'userId': _userId,
-            'expiryDate': _expiryDate.toIso8601String(),
-            'userName': _userName,
-            'provider': _provider,
-            'userAdmin': _userAdmin,
-          });
-          prefs.setString('userPref', userPref);
-
-          break;
-        case FacebookLoginStatus.cancelledByUser:
-          print('canceled');
-          break;
-        case FacebookLoginStatus.error:
-          print('Switch error');
-          print(result.errorMessage);
-          fbLogin.logOut();
-          break;
-      }
-    } catch (e) {
-      print(e);
-      throw e;
-    }
-  }
 }
