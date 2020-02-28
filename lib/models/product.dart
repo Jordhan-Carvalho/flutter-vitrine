@@ -32,6 +32,7 @@ class Product {
   final City city;
   bool isFavorite;
   final String ownerName;
+  final String ownerId;
   List<String> searchTerms;
   bool approved;
 
@@ -47,6 +48,7 @@ class Product {
     @required this.price,
     @required this.category,
     this.city,
+    this.ownerId,
     @required this.telNumber,
     this.ownerName,
     this.searchTerms,

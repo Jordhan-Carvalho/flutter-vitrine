@@ -33,6 +33,10 @@ class Auth with ChangeNotifier {
     return _userId != null;
   }
 
+  bool get isAdmin {
+    return _userAdmin;
+  }
+
   String get token {
     if (_expiryDate != null &&
         _expiryDate.isAfter(DateTime.now()) &&
@@ -73,16 +77,13 @@ class Auth with ChangeNotifier {
       assert(user.uid == currentUser.uid);
 
       final userData = await user.getIdToken(refresh: true);
-      // final DocumentSnapshot userRole = await _firestore
-      //     .collection('administrators')
-      //     .document(currentUser.uid)
-      //     .get();
+      final DocumentSnapshot userRole = await _firestore
+          .collection('administrators')
+          .document(currentUser.uid)
+          .get();
 
-      // if (userRole.data.length != 0) {
-      //   _userAdmin = true;
-      //   print('user Admin $_userAdmin');
-      // }
-      // print('user admin outside $_userAdmin');
+      _userAdmin = userRole.exists;
+      print('user admin $_userAdmin');
 
       _userName = user.displayName;
       _token = userData.token;
@@ -100,7 +101,8 @@ class Auth with ChangeNotifier {
         'userId': _userId,
         'expiryDate': _expiryDate.toIso8601String(),
         'userName': _userName,
-        'provider': _provider
+        'provider': _provider,
+        'userAdmin': _userAdmin,
       });
       prefs.setString('userPref', userPref);
     } catch (e) {
@@ -123,6 +125,7 @@ class Auth with ChangeNotifier {
       _userId = extractedUserData['userId'];
       _userName = extractedUserData['userName'];
       _provider = extractedUserData['provider'];
+      _userAdmin = extractedUserData['userAdmin'];
       _expiryDate = expiryDate;
       notifyListeners();
       // if (expiryDate.isAfter(DateTime.now())) {
@@ -142,6 +145,7 @@ class Auth with ChangeNotifier {
     _token = null;
     _userId = null;
     _expiryDate = null;
+    _userAdmin = null;
     if (_authTimer != null) {
       _authTimer.cancel();
       _authTimer = null;
@@ -195,6 +199,13 @@ class Auth with ChangeNotifier {
           currentUser = await _auth.currentUser();
           assert(user.uid == currentUser.uid);
 
+          final DocumentSnapshot userRole = await _firestore
+              .collection('administrators')
+              .document(currentUser.uid)
+              .get();
+
+          _userAdmin = userRole.exists;
+
           _userName = user.displayName;
           _token = result.accessToken.token;
           _userId = currentUser.uid;
@@ -209,7 +220,8 @@ class Auth with ChangeNotifier {
             'userId': _userId,
             'expiryDate': _expiryDate.toIso8601String(),
             'userName': _userName,
-            'provider': _provider
+            'provider': _provider,
+            'userAdmin': _userAdmin,
           });
           prefs.setString('userPref', userPref);
 

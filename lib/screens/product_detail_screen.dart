@@ -12,6 +12,7 @@ import '../widgets/favorite_button.dart';
 import '../providers/products.dart';
 import '../widgets/carousel_pro.dart';
 import '../widgets/custom_sliverappbar.dart';
+import '../providers/auth.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   ProductDetailScreen({Key key}) : super(key: key);
@@ -23,6 +24,33 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   var currImgIndex = 0;
+
+  Future<void> _deleteAdmin(String prodId) async {
+    if (!await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('Atenção!! Deletar produto?'),
+              actions: <Widget>[
+                FlatButton(
+                  child: const Text('Sim'),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+                FlatButton(
+                  child: const Text('Não'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+              ],
+            ))) {
+      return;
+    }
+    await Provider.of<Products>(context, listen: false)
+        .deleteProduct(prodId, admin: true);
+    Navigator.of(context).pop();
+  }
 
   void _changeContainerSize(int currentImageIndex) {
     setState(() {
@@ -56,6 +84,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final prod = ModalRoute.of(context).settings.arguments as Product;
+    final isAdmin = Provider.of<Auth>(context, listen: false).isAdmin;
 
     return Scaffold(
       body: CustomScrollView(
@@ -248,6 +277,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   FavoriteButton(
                     prod: prod,
                   ),
+                  if (isAdmin)
+                    IconButton(
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                      onPressed: () => _deleteAdmin(prod.id),
+                    ),
                   ThemeButton(
                     content: Row(
                       children: <Widget>[

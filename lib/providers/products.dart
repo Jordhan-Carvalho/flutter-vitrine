@@ -126,21 +126,23 @@ class Products with ChangeNotifier {
       _items.insert(
           0,
           Product(
-              id: resp.documentID,
-              title: prod.title,
-              category: prod.category,
-              subcategory: prod.subcategory,
-              city: prod.city,
-              condition: prod.condition,
-              createdOn: timeCreated,
-              delivery: prod.delivery,
-              description: prod.description,
-              price: prod.price,
-              telNumber: prod.telNumber,
-              tradable: prod.tradable,
-              imageUrl: prod.imageUrl,
-              ownerName: _userName,
-              searchTerms: prodSearchTerms));
+            id: resp.documentID,
+            title: prod.title,
+            category: prod.category,
+            subcategory: prod.subcategory,
+            city: prod.city,
+            condition: prod.condition,
+            createdOn: timeCreated,
+            delivery: prod.delivery,
+            description: prod.description,
+            price: prod.price,
+            telNumber: prod.telNumber,
+            tradable: prod.tradable,
+            imageUrl: prod.imageUrl,
+            ownerName: _userName,
+            searchTerms: prodSearchTerms,
+            ownerId: _userId,
+          ));
       notifyListeners();
     } catch (e) {
       print(e);
@@ -201,23 +203,23 @@ class Products with ChangeNotifier {
 
       querySnapshot.documents.forEach((item) {
         loadedProds.add(Product(
-          id: item.documentID,
-          condition: item.data['condition'] == "Usado"
-              ? Condition.Usado
-              : Condition.Novo,
-          category: item.data['category'],
-          subcategory: item.data['subcategory'],
-          delivery: item.data['delivery'],
-          description: item.data['description'],
-          price: item.data['price'],
-          telNumber: item.data['telNumber'],
-          title: item.data['title'],
-          tradable: item.data['tradable'],
-          city: item.data['city'] == "Barreiras" ? City.Barreiras : City.LEM,
-          createdOn: DateTime.parse(item.data['createdOn']),
-          imageUrl: item.data['imageUrl'].cast<String>(),
-          ownerName: item.data['ownerName'],
-        ));
+            id: item.documentID,
+            condition: item.data['condition'] == "Usado"
+                ? Condition.Usado
+                : Condition.Novo,
+            category: item.data['category'],
+            subcategory: item.data['subcategory'],
+            delivery: item.data['delivery'],
+            description: item.data['description'],
+            price: item.data['price'],
+            telNumber: item.data['telNumber'],
+            title: item.data['title'],
+            tradable: item.data['tradable'],
+            city: item.data['city'] == "Barreiras" ? City.Barreiras : City.LEM,
+            createdOn: DateTime.parse(item.data['createdOn']),
+            imageUrl: item.data['imageUrl'].cast<String>(),
+            ownerName: item.data['ownerName'],
+            ownerId: item.data['ownerId']));
       });
 
       if (filterByUser) {
@@ -280,17 +282,25 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> deleteProduct(String id) async {
-    final prodIndex = _userItems.indexWhere((prod) => prod.id == id);
-    var existingProd = _userItems[prodIndex];
-    _userItems.removeAt(prodIndex);
+  Future<void> deleteProduct(String id, {bool admin = false}) async {
+    Product existingProd;
+    int prodIndex;
+    if (admin) {
+      prodIndex = _items.indexWhere((prod) => prod.id == id);
+      existingProd = _items[prodIndex];
+      _items.removeAt(prodIndex);
+    } else {
+      prodIndex = _userItems.indexWhere((prod) => prod.id == id);
+      existingProd = _userItems[prodIndex];
+      _userItems.removeAt(prodIndex);
+    }
     notifyListeners();
     try {
       //img path is /images/userId/description&price&title&1 => the number changes 1,2,3,4
       existingProd.imageUrl.forEach((imgUl) => print(imgUl));
       for (var i = 0; i < existingProd.imageUrl.length; i++) {
         String imgPath =
-            'images/$_userId/${existingProd.createdOn.toString()}&$i';
+            'images/${existingProd.ownerId}/${existingProd.createdOn.toString()}&$i';
         //regex remove white spaces
         print(imgPath.replaceAll(new RegExp(r"\s+\b|\b\s"), ""));
         await _storage
@@ -300,7 +310,11 @@ class Products with ChangeNotifier {
       }
       await _firestore.collection('products').document(id).delete();
     } catch (e) {
-      _userItems.insert(prodIndex, existingProd);
+      if (admin) {
+        _items.insert(prodIndex, existingProd);
+      } else {
+        _userItems.insert(prodIndex, existingProd);
+      }
       notifyListeners();
       throw e;
     }
@@ -337,6 +351,7 @@ class Products with ChangeNotifier {
           createdOn: DateTime.parse(item.data['createdOn']),
           imageUrl: item.data['imageUrl'].cast<String>(),
           ownerName: item.data['ownerName'],
+          ownerId: item.data['ownerId'],
         ));
       });
       _favItems = favoriteProds;
@@ -471,6 +486,7 @@ class Products with ChangeNotifier {
           createdOn: DateTime.parse(item.data['createdOn']),
           imageUrl: item.data['imageUrl'].cast<String>(),
           ownerName: item.data['ownerName'],
+          ownerId: item.data['ownerId'],
         ));
       });
 
@@ -556,6 +572,7 @@ class Products with ChangeNotifier {
           createdOn: DateTime.parse(item.data['createdOn']),
           imageUrl: item.data['imageUrl'].cast<String>(),
           ownerName: item.data['ownerName'],
+          ownerId: item.data['ownerId'],
         ));
       });
 
@@ -645,6 +662,7 @@ class Products with ChangeNotifier {
           createdOn: DateTime.parse(item.data['createdOn']),
           imageUrl: item.data['imageUrl'].cast<String>(),
           ownerName: item.data['ownerName'],
+          ownerId: item.data['ownerId'],
         ));
       });
 

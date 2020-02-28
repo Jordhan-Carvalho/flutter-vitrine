@@ -6,6 +6,7 @@ import '../providers/products.dart';
 import '../widgets/product_item.dart';
 import '../models/product.dart';
 import '../screens/edit_product_screen.dart';
+import '../helpers/push_notification_service.dart';
 
 class ProdOverview extends StatefulWidget {
   final String category;
@@ -45,6 +46,7 @@ class _ProdOverviewState extends State<ProdOverview>
   @override
   void initState() {
     super.initState();
+    PushNotificationService(context).initialise();
     print('init  ${widget.showTradable}');
     if (widget.category != null && widget.category != '') {
       subcategories = [

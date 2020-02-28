@@ -47,7 +47,8 @@ class PushNotificationService {
         print("onResume: $message");
         _serialiseAndNavigate(message);
       },
-      onBackgroundMessage: Platform.isIOS ? null : _myBackgroundMessageHandler,
+      // TODO active it
+      // onBackgroundMessage: Platform.isIOS ? null : _myBackgroundMessageHandler,
     );
   }
 
