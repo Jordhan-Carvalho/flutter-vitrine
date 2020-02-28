@@ -132,44 +132,46 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 color: Theme.of(context).canvasColor,
                 child: Column(
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Chip(
-                          backgroundColor: Colors.transparent,
-                          avatar: CircleAvatar(
-                            backgroundColor: Theme.of(context).primaryColor,
-                            child: const Text('R\$'),
-                          ),
-                          label: Text(
-                              '${NumberFormat("#,##0.00", "pt_BR").format(prod.price / 100).toString()}'),
-                        ),
-                        Chip(
-                          backgroundColor: Colors.transparent,
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.white10,
-                            child: Icon(
-                              prod.condition == Condition.Novo
-                                  ? Icons.new_releases
-                                  : Icons.beenhere,
-                              color: Theme.of(context).primaryColor,
+                    FittedBox(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Chip(
+                            backgroundColor: Colors.transparent,
+                            avatar: CircleAvatar(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              child: const Text('R\$'),
                             ),
+                            label: Text(
+                                '${NumberFormat("#,##0.00", "pt_BR").format(prod.price / 100).toString()}'),
                           ),
-                          label: Text('${describeEnum(prod.condition)}'),
-                        ),
-                        Chip(
-                          backgroundColor: Colors.transparent,
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.white10,
-                            child: Icon(
-                              Icons.timer,
-                              color: Theme.of(context).primaryColor,
+                          Chip(
+                            backgroundColor: Colors.transparent,
+                            avatar: CircleAvatar(
+                              backgroundColor: Colors.white10,
+                              child: Icon(
+                                prod.condition == Condition.Novo
+                                    ? Icons.new_releases
+                                    : Icons.beenhere,
+                                color: Theme.of(context).primaryColor,
+                              ),
                             ),
+                            label: Text('${describeEnum(prod.condition)}'),
                           ),
-                          label: Text(DateFormat('d/MM/y', 'pt-BR')
-                              .format(prod.createdOn)),
-                        ),
-                      ],
+                          Chip(
+                            backgroundColor: Colors.transparent,
+                            avatar: CircleAvatar(
+                              backgroundColor: Colors.white10,
+                              child: Icon(
+                                Icons.timer,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            label: Text(DateFormat('d/MM/y', 'pt-BR')
+                                .format(prod.createdOn)),
+                          ),
+                        ],
+                      ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -211,7 +213,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: const Text(
-                          'Vendido por:',
+                          'Vendedor:',
                           style: TextStyle(fontStyle: FontStyle.italic),
                         ),
                       ),
@@ -227,7 +229,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(right: 10),
+                    padding: const EdgeInsets.only(right: 5),
                     child: Text(
                       prod.category,
                       style: TextStyle(

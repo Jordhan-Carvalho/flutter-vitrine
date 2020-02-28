@@ -113,13 +113,13 @@ class BuyServices extends StatelessWidget {
               style: TextStyle(color: Colors.grey),
             ),
             BenefitsItem(benefitsBasic),
-            Padding(
-              padding: const EdgeInsets.only(right: 300.0),
-              child: Text(
-                "Exemplo",
-                style: TextStyle(color: Colors.grey),
-              ),
+
+            // padding: const EdgeInsets.only(right: 300.0),
+            Text(
+              "Exemplo",
+              style: TextStyle(color: Colors.grey),
             ),
+
             ServiceItem(service: serviceBasic),
             Padding(
                 padding: const EdgeInsets.all(8),
@@ -132,13 +132,11 @@ class BuyServices extends StatelessWidget {
               style: TextStyle(color: Colors.grey),
             ),
             BenefitsItem(benefitsPremium),
-            Padding(
-              padding: const EdgeInsets.only(right: 300.0),
-              child: Text(
-                "Exemplo",
-                style: TextStyle(color: Colors.grey),
-              ),
+            Text(
+              "Exemplo",
+              style: TextStyle(color: Colors.grey),
             ),
+
             ServiceItem(service: service),
             SizedBox(
               height: 30,
