@@ -48,7 +48,7 @@ class PushNotificationService {
         _serialiseAndNavigate(message);
       },
       // TODO active it
-      // onBackgroundMessage: Platform.isIOS ? null : _myBackgroundMessageHandler,
+      onBackgroundMessage: Platform.isIOS ? null : _myBackgroundMessageHandler,
     );
   }
 
