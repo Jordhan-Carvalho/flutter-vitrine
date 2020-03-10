@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "957284359259-h02gnmtg4ili5uef3ob6gq8rgoudmr77.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.jordhan.vitrine",
+            "certificate_hash": "7d3a7e683c9580494cb275732197e292051cfd7e"
+          }
+        },
+        {
           "client_id": "957284359259-rbo4smp1qnul7p1llo89p5bihg4e18dg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
