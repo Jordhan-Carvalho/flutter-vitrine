@@ -369,8 +369,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                         child: Column(
                                           children: <Widget>[
                                             RadioListTile<Condition>(
-                                              title: const FittedBox(
-                                                  child: const Text('Usado')),
+                                              title: const Text('Usado'),
                                               value: Condition.Usado,
                                               groupValue: _editedProd.condition,
                                               activeColor: Theme.of(context)
@@ -382,8 +381,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                               },
                                             ),
                                             RadioListTile<Condition>(
-                                              title: const FittedBox(
-                                                  child: const Text('Novo')),
+                                              title: const Text('Novo'),
                                               value: Condition.Novo,
                                               groupValue: _editedProd.condition,
                                               activeColor: Theme.of(context)

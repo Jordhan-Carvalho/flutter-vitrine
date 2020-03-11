@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
 
+import '../helpers/consts.dart';
 import '../models/service.dart';
 import '../widgets/service_item.dart';
 import '../widgets/benefits_item.dart';
@@ -144,7 +145,7 @@ class BuyServices extends StatelessWidget {
             RaisedButton.icon(
               color: Theme.of(context).primaryColor,
               onPressed: () {
-                FlutterOpenWhatsapp.sendSingleMessage("5577991116269",
+                FlutterOpenWhatsapp.sendSingleMessage(Consts.vitrineNumber,
                     "Olá, estou interessado em anunciar prestação de serviço no Vitrine... como proceder?");
               },
               icon: Icon(MdiIcons.whatsapp),

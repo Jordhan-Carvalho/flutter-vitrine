@@ -2,11 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
 import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../helpers/consts.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({Key key}) : super(key: key);
 
   static const routeName = "/about";
+
+  void _launchURL(String portUrl) async {
+    final url = portUrl;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Falha em abrir $url';
+    }
+  }
 
   Future<String> _fetchVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -52,7 +64,8 @@ class AboutScreen extends StatelessWidget {
                         color: Theme.of(context).primaryColor,
                       ),
                       title: Text('Política de Privacidade'),
-                      onTap: () {},
+                      onTap: () =>
+                          _launchURL("https://vitrinevirtual.app/privacidade"),
                     ),
                     ListTile(
                       leading: Icon(
@@ -60,7 +73,8 @@ class AboutScreen extends StatelessWidget {
                         color: Theme.of(context).primaryColor,
                       ),
                       title: Text('Termos de uso'),
-                      onTap: () {},
+                      onTap: () =>
+                          _launchURL("https://vitrinevirtual.app/termos"),
                     ),
                     ListTile(
                       leading: Icon(
@@ -69,8 +83,9 @@ class AboutScreen extends StatelessWidget {
                       ),
                       title: Text('Fale conosco'),
                       onTap: () {
+                        print(Consts.vitrineNumber);
                         FlutterOpenWhatsapp.sendSingleMessage(
-                            "5577991116269", "Olá !");
+                            Consts.vitrineNumber, "Olá !");
                       },
                     ),
                   ],
