@@ -20,10 +20,8 @@ class _AuthCardState extends State<AuthCard> {
     });
     try {
       await Provider.of<Auth>(context, listen: false).signInWithGoogle();
-      setState(() {
-        _isLoading = false;
-      });
     } catch (e) {
+      print(e);
       setState(() {
         _isLoading = false;
       });

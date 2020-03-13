@@ -147,6 +147,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
             .addProduct(_editedProd, _timeCreated);
       } catch (e) {
         print(e);
+        // TODO delete photos in case of success
         await showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
@@ -332,7 +333,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                             final newVal =
                                                 CurrencyPtBrInputFormatter
                                                     .valueToIntString(value);
-                                            print(newVal);
                                             if (newVal.isEmpty) {
                                               return "Por favor preencha o campo";
                                             }
@@ -514,7 +514,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       if (value.isEmpty) {
                                         return 'Por favor preencha o campo';
                                       }
-                                      if (value.length < 15) {
+                                      if (value.length < 16) {
                                         return 'Por favor aumente a sua descrição.';
                                       }
                                       return null;

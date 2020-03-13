@@ -1,3 +1,3 @@
 class Consts {
-  static const vitrineNumber = "5577991116269";
+  static const vitrineNumber = "5577981525511";
 }

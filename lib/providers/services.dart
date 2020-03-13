@@ -22,35 +22,6 @@ class Services with ChangeNotifier {
         .where((service) => service.subcategory == subcategory)
         .toList();
   }
-  // List<Product> get filterDeliveryItems {
-  //   return _items.where((prod) => prod.delivery).toList();
-  // }
-
-  // List<Product> get filterTradableItems {
-  //   return _items.where((prod) => prod.tradable).toList();
-  // }
-
-  // List<Service> get filterTradDeliveryItems() {
-  //   return _items.where((prod) => prod.delivery && prod.tradable).toList();
-  // }
-
-  // List<Product> get filterSearchDeliveryItems {
-  //   return _searchedItems.where((prod) => prod.delivery).toList();
-  // }
-
-  // List<Product> get filterSearchTradableItems {
-  //   return _searchedItems.where((prod) => prod.tradable).toList();
-  // }
-
-  // List<Product> get filterSearchTradDeliveryItems {
-  //   return _searchedItems
-  //       .where((prod) => prod.delivery && prod.tradable)
-  //       .toList();
-  // }
-
-  // Product findById(String id) {
-  //   return items.firstWhere((prod) => prod.id == id);
-  // }
 
   Future<void> addService(Service service) async {
     final _timeCreated = DateTime.now();
@@ -96,59 +67,6 @@ class Services with ChangeNotifier {
       print(e);
     }
   }
-
-  // Future<void> updateProduct(String id, Product newProd) async {
-  //   final prodIndex = _items.indexWhere((prod) => prod.id == id);
-  //   final prodSearchTerm = KeywordGenerator.searchTerms(newProd.title);
-  //   if (prodIndex >= 0) {
-  //     try {
-  //       await _firestore.collection('products').document(id).updateData({
-  //         "title": newProd.title,
-  //         "condition": newProd.condition == Condition.Usado ? "Usado" : "Novo",
-  //         "category": newProd.category,
-  //         "delivery": newProd.delivery,
-  //         "description": newProd.description,
-  //         "price": newProd.price,
-  //         "telNumber": newProd.telNumber,
-  //         "tradable": newProd.tradable,
-  //         "searchTerms": prodSearchTerm,
-  //       });
-  //       _items[prodIndex] = newProd;
-  //       notifyListeners();
-  //     } catch (e) {
-  //       throw e;
-  //     }
-  //   } else {
-  //     print('...');
-  //   }
-  // }
-
-  // Future<void> deleteProduct(String id) async {
-  //   final prodIndex = _userItems.indexWhere((prod) => prod.id == id);
-  //   var existingProd = _userItems[prodIndex];
-  //   _userItems.removeAt(prodIndex);
-  //   notifyListeners();
-  //   try {
-  //     //img path is /images/userId/description&price&title&1 => the number changes 1,2,3,4
-  //     existingProd.imageUrl.forEach((imgUl) => print(imgUl));
-  //     for (var i = 0; i < existingProd.imageUrl.length; i++) {
-  //       String imgPath =
-  //           'images/$_userId/${existingProd.description.substring(0, 15)}&${existingProd.price}&${existingProd.title}&$i';
-  //       //regex remove white spaces
-  //       print(imgPath.replaceAll(new RegExp(r"\s+\b|\b\s"), ""));
-  //       await _storage
-  //           .ref()
-  //           .child(imgPath.replaceAll(new RegExp(r"\s+\b|\b\s"), ""))
-  //           .delete();
-  //     }
-  //     await _firestore.collection('products').document(id).delete();
-  //   } catch (e) {
-  //     _userItems.insert(prodIndex, existingProd);
-  //     notifyListeners();
-  //     throw e;
-  //   }
-  //   existingProd = null;
-  // }
 
   Future<void> fetchCategory(String category) async {
     QuerySnapshot querySnapshot;

@@ -83,7 +83,6 @@ class AboutScreen extends StatelessWidget {
                       ),
                       title: Text('Fale conosco'),
                       onTap: () {
-                        print(Consts.vitrineNumber);
                         FlutterOpenWhatsapp.sendSingleMessage(
                             Consts.vitrineNumber, "Olá !");
                       },

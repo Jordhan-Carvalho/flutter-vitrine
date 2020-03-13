@@ -46,7 +46,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<Auth, Products>(
             create: (_) => Products(),
             update: (ctx, authData, prevProds) {
-              prevProds..authToken = authData.token;
               prevProds..userName = authData.userName;
               prevProds..userId = authData.userId;
               return prevProds;
@@ -102,7 +101,6 @@ class MyApp extends StatelessWidget {
           },
           // Used to pass args on statefull widgets (initState widget.arg)
           onGenerateRoute: (RouteSettings settings) {
-            print('build route for ${settings.name}');
             var routes = <String, WidgetBuilder>{
               ProdOverview.routeName: (ctx) => ProdOverview(
                     category: settings.arguments,

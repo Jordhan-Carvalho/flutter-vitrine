@@ -17,16 +17,11 @@ class Products with ChangeNotifier {
   List<Product> _searchedItems = [];
   List<Product> _subcategoryItems = [];
 
-  String _authToken;
   String _userId;
   String _userName;
 
   set userName(String value) {
     _userName = value;
-  }
-
-  set authToken(String value) {
-    _authToken = value;
   }
 
   set userId(String value) {
@@ -95,7 +90,7 @@ class Products with ChangeNotifier {
     final titleSearchTerm = KeywordGenerator.searchTerms(prod.title);
     final subcatSearchTerm = KeywordGenerator.searchTerms(prod.subcategory);
     final descSearchTerm =
-        KeywordGenerator.searchTerms(prod.description.substring(0, 25));
+        KeywordGenerator.searchTerms(prod.description.substring(0, 15));
 
     final prodSearchTerms = [
       ...titleSearchTerm,
@@ -297,12 +292,12 @@ class Products with ChangeNotifier {
     notifyListeners();
     try {
       //img path is /images/userId/description&price&title&1 => the number changes 1,2,3,4
-      existingProd.imageUrl.forEach((imgUl) => print(imgUl));
+      // existingProd.imageUrl.forEach((imgUl) => print(imgUl));
       for (var i = 0; i < existingProd.imageUrl.length; i++) {
         String imgPath =
             'images/${existingProd.ownerId}/${existingProd.createdOn.toString()}&$i';
         //regex remove white spaces
-        print(imgPath.replaceAll(new RegExp(r"\s+\b|\b\s"), ""));
+        // print(imgPath.replaceAll(new RegExp(r"\s+\b|\b\s"), ""));
         await _storage
             .ref()
             .child(imgPath.replaceAll(new RegExp(r"\s+\b|\b\s"), ""))
