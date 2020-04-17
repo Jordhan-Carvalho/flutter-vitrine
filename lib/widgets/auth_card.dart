@@ -42,11 +42,10 @@ class _AuthCardState extends State<AuthCard> {
           content: Text('E-mail já esta sendo utilizado'),
           duration: Duration(milliseconds: 4000),
         ));
+      setState(() {
+        _isLoading = false;
+      });
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
